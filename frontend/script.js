@@ -463,30 +463,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Sample Presets Loader (Section 16)
-  async function loadSamplePreset(topPath, sidePath, label) {
-    try {
-      const topBlob = await fetch(topPath).then(r => r.blob());
-      const sideBlob = await fetch(sidePath).then(r => r.blob());
-      const topFile = new File([topBlob], `${label}_top.jpg`, { type: 'image/jpeg' });
-      const sideFile = new File([sideBlob], `${label}_side.jpg`, { type: 'image/jpeg' });
-      handleFileSelect(topFile, 'top');
-      handleFileSelect(sideFile, 'side');
-    } catch (e) {
-      console.warn('Could not load preset files:', e);
-    }
-  }
-
-  document.getElementById('presetPerfect').addEventListener('click', () => {
-    loadSamplePreset('/samples/perfect_top.jpg', '/samples/perfect_side.jpg', 'perfect');
-  });
-  document.getElementById('presetFlat').addEventListener('click', () => {
-    loadSamplePreset('/samples/flat_top.jpg', '/samples/flat_side.jpg', 'flat');
-  });
-  document.getElementById('presetUneven').addEventListener('click', () => {
-    loadSamplePreset('/samples/uneven_top.jpg', '/samples/uneven_side.jpg', 'uneven');
-  });
-
   // -------------------------------------------------------------
   // 5. Execute Analysis Pipeline (Multipart POST)
   // -------------------------------------------------------------

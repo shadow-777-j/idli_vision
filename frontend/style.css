@@ -280,53 +280,6 @@ body {
   margin-top: 0.25rem;
 }
 
-/* Presets Strip */
-.preset-strip {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.preset-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-muted);
-}
-
-.btn-chip {
-  background: #1e293b;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--color-ivory);
-  font-size: 0.825rem;
-  font-weight: 600;
-  padding: 0.45rem 1rem;
-  border-radius: var(--radius-full);
-  cursor: pointer;
-  box-shadow: 0 3px 0 #0f172a, 0 3px 6px rgba(0, 0, 0, 0.25);
-  transform: translateY(0);
-  transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-}
-
-.btn-chip:hover {
-  background: #28374d;
-  color: var(--color-amber-light);
-  border-color: var(--border-accent);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 0 #0f172a;
-}
-
-.btn-chip:focus-visible {
-  outline: 2px solid var(--color-amber);
-  outline-offset: 2px;
-}
-
-.btn-chip:active {
-  transform: translateY(3px);
-  box-shadow: 0 0 0 #0f172a;
-}
-
 /* Dual Upload Grid */
 .upload-grid {
   display: grid;
