@@ -86,7 +86,7 @@
         <div class="lore-card">
           <div class="lore-header">
             <h3>Choose Your Exploration Path</h3>
-            <p class="lore-sub">Select an interactive trail to uncover specific secrets of the idli craft:</p>
+            <p class="lore-sub">Select a path to explore the science:</p>
           </div>
 
           <div class="path-buttons">
@@ -311,8 +311,7 @@
           <div class="intro-pill">Precision Computer Vision Pipeline</div>
           <h2>Upload Your Idli for Deterministic Analysis</h2>
           <p class="intro-desc">
-            Unlike superficial AI guesswork, Idli Vision uses OpenCV contour tracing, symmetry axis computation, and mathematical pore analysis. 
-            To calculate 3D metrics, <strong>both top-view and side-view photographs</strong> are required.
+            Upload top and side photographs for calibrated 3D geometric and crumb analysis.
           </p>
         </div>
 
@@ -322,9 +321,7 @@
           <div class="callout-body">
             <strong>Why are two perspectives mandatory?</strong>
             <p>
-              A single top-down image cannot measure vertical rise or crumb density. 
-              The <em>Top View</em> extracts diameter, roundness, axis symmetry, deformity, and fermentation hole distribution. 
-              The <em>Side View</em> measures profile thickness and leavening lift against the 2.3 cm standard.
+              A top view measures diameter, circularity, and pore distribution. A side profile measures vertical rise and thickness against the 2.3 cm reference standard.
             </p>
           </div>
         </div>
@@ -357,8 +354,7 @@
                     <path d="M8 12h8"></path>
                   </svg>
                 </div>
-                <p class="drop-primary">Drag & drop top image here</p>
-                <p class="drop-secondary">or click to browse from device</p>
+                <p class="drop-primary">Drag & drop or click to upload</p>
                 <span class="file-spec">JPG, PNG, WebP &bull; Max 10MB</span>
               </div>
               <div class="preview-container hidden" id="topPreviewContainer">
@@ -394,8 +390,7 @@
                     <line x1="8" y1="12" x2="16" y2="12"></line>
                   </svg>
                 </div>
-                <p class="drop-primary">Drag & drop side image here</p>
-                <p class="drop-secondary">or click to browse from device</p>
+                <p class="drop-primary">Drag & drop or click to upload</p>
                 <span class="file-spec">JPG, PNG, WebP &bull; Max 10MB</span>
               </div>
               <div class="preview-container hidden" id="sidePreviewContainer">
@@ -421,7 +416,7 @@
           </div>
 
           <button type="button" class="btn-primary" id="analyzeBtn" disabled>
-            <span class="btn-text">Execute Computer Vision Analysis</span>
+            <span class="btn-text">Run Computer Vision Analysis</span>
             <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
@@ -467,10 +462,10 @@
       <!-- ==================================================================== -->
       <section class="tab-pane" id="tab-report">
         <div class="section-intro">
-          <div class="intro-pill">Section 8.1 Physical Quality Report</div>
-          <h2>Computer Vision Scorecard & Detection Overlays</h2>
+          <div class="intro-pill">Quality Scorecard</div>
+          <h2>Computer Vision Scorecard & Overlays</h2>
           <p class="intro-desc">
-            Inspect your idli's physical geometry derived deterministically from OpenCV contour segmentation and thickness calibration.
+            Deterministic geometry derived from calibrated OpenCV contour tracing and thickness profiling.
           </p>
         </div>
 
@@ -506,9 +501,9 @@
           <div class="visual-inspection-card">
             <div class="card-header-flex">
               <div>
-                <span class="card-badge">Section 7.5 Visual Detection Overlay</span>
+                <span class="card-badge">Detection Overlays</span>
                 <h3>Computer Vision Detection Overlays</h3>
-                <p class="card-hint">Toggle between the original capture and the OpenCV annotated telemetry:</p>
+                <p class="card-hint">Toggle annotated OpenCV telemetry:</p>
               </div>
 
               <div class="view-toggle-group">
@@ -560,9 +555,9 @@
             <!-- Radar Chart -->
             <div class="chart-card">
               <div class="card-header">
-                <span class="card-badge">Multivariate Geometric Radar</span>
-                <h3>Target Standard Deviation</h3>
-                <p class="card-hint">Comparing measured dimensions against the ideal standard</p>
+                <span class="card-badge">Multivariate Geometry</span>
+                <h3>Target Standard Comparison</h3>
+                <p class="card-hint">Measured dimensions vs the ideal benchmark</p>
               </div>
               <div class="chart-container">
                 <canvas id="idliRadarChart"></canvas>
@@ -651,12 +646,12 @@
             </div>
           </div>
 
-          <!-- Detected Issues Breakdown (Section 8.1) -->
+          <!-- Detected Issues Breakdown -->
           <div class="issues-card">
             <div class="card-header">
-              <span class="card-badge">Section 8.1 Diagnostic</span>
-              <h3>Measurement-Derived Physical Observations</h3>
-              <p class="card-hint">Grounded in actual OpenCV contour geometry rather than generic speculation:</p>
+              <span class="card-badge">Diagnostic Observations</span>
+              <h3>Physical Telemetry Findings</h3>
+              <p class="card-hint">OpenCV contour and thickness analysis:</p>
             </div>
             <div class="issues-list" id="issuesList">
               <div class="issue-item good">
@@ -676,10 +671,10 @@
       <!-- ==================================================================== -->
       <section class="tab-pane" id="tab-coach">
         <div class="section-intro">
-          <div class="intro-pill">Section 8.3 &bull; AI Conversational Layer</div>
+          <div class="intro-pill">AI Culinary Coach</div>
           <h2>The Idli Coach</h2>
           <p class="intro-desc">
-            A witty, measurement-grounded culinary coach. No generic tips: feedback is strictly derived from your actual computer vision numbers.
+            Measurement-grounded coaching and prioritized fixes derived directly from your computer vision metrics.
           </p>
         </div>
 
@@ -771,10 +766,10 @@
     <div class="modal-backdrop hidden" id="comparisonModal">
       <div class="comparison-modal-card">
         <div class="modal-header">
-          <h3>Section 8.2 Comparison Mode</h3>
+          <h3>Benchmark Comparison</h3>
           <button type="button" class="close-btn" id="closeComparisonBtn">&times;</button>
         </div>
-        <p class="modal-sub">Compare your currently evaluated Idli against a benchmark competitor:</p>
+        <p class="modal-sub">Compare your measured idli against the theoretical IdliQ benchmark:</p>
 
         <div class="comparison-grid">
           <div class="comp-col" id="compColA">
