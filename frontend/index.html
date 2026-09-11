@@ -20,27 +20,21 @@
     <!-- Main Header -->
     <header class="main-header">
       <div class="brand">
-        <div class="brand-badge">
-          <span class="pulse-dot"></span>
-          <span class="badge-text">OpenCV Deterministic CV &bull; Gemini AI Coach</span>
-        </div>
-        <h1 class="logo-title">
-          <span class="logo-accent">IDLI</span> VISION
-        </h1>
-        <p class="tagline">Deterministic Physical Measurement &bull; Calibrated Quality Scoring &bull; AI Coaching</p>
-      </div>
-
-      <div class="header-controls">
-        <div class="system-status" id="systemStatus">
-          <span class="status-indicator online" id="statusDot"></span>
-          <span class="status-text" id="statusText">System Active</span>
+        <div class="brand-identity">
+          <img src="assets/idli.png" alt="Idli Vision logo" class="header-logo">
+          <div class="brand-titles">
+            <h1 class="logo-title">
+              <span class="logo-accent">IDLI</span> VISION
+            </h1>
+            <p class="tagline">Deterministic Physical Measurement &bull; Calibrated Quality Scoring &bull; AI Coaching</p>
+          </div>
         </div>
       </div>
     </header>
 
     <!-- Navigation Skeleton (Section 6 Experience Flow) -->
     <nav class="flow-nav" aria-label="Experience Journey">
-      <button class="nav-step" data-tab="tab-story" id="navStory">
+      <button class="nav-step active" data-tab="tab-story" id="navStory">
         <span class="step-num">01</span>
         <div class="step-meta">
           <span class="step-title">Origin & Science</span>
@@ -48,7 +42,7 @@
         </div>
       </button>
 
-      <button class="nav-step active" data-tab="tab-analyzer" id="navAnalyzer">
+      <button class="nav-step" data-tab="tab-analyzer" id="navAnalyzer">
         <span class="step-num">02</span>
         <div class="step-meta">
           <span class="step-title">The Analyzer</span>
@@ -77,41 +71,69 @@
     <main class="content-viewport">
 
       <!-- ==================================================================== -->
-      <!-- TAB 1: ORIGIN & SCIENCE (Section 6.1 Interactive Origin Story)        -->
+      <!-- TAB 1: ORIGIN & SCIENCE (Interactive Story & Cooking Experience)      -->
       <!-- ==================================================================== -->
-      <section class="tab-pane" id="tab-story">
+      <section class="tab-pane active" id="tab-story">
         <div class="section-intro">
-          <div class="intro-pill">Section 6.1 Interactive Chronicle</div>
+          <div class="intro-pill">Origin & Science</div>
           <h2>The Idli Origin Story & Fermentation Physics</h2>
           <p class="intro-desc">
             Explore South India's steam-leavened masterpiece across 1,100 years of culinary engineering and microbial fermentation.
           </p>
         </div>
 
-        <!-- Feature A: Choose-Your-Path Navigation -->
+        <!-- Choose-Your-Path Navigation with Themed Animations -->
         <div class="lore-card">
           <div class="lore-header">
-            <span class="module-tag">Feature A</span>
             <h3>Choose Your Exploration Path</h3>
             <p class="lore-sub">Select an interactive trail to uncover specific secrets of the idli craft:</p>
           </div>
 
           <div class="path-buttons">
-            <button class="path-btn active" data-path="path-origin">
-              <span class="path-icon">📜</span>
-              <span class="path-text">1. Ancient Origin</span>
+            <!-- 1. Ancient Origin -->
+            <button class="path-btn active" data-path="path-origin" aria-label="Ancient Origin" title="Ancient Origin">
+              <div class="path-anim anim-scroll" aria-hidden="true">
+                <svg class="scroll-svg" viewBox="0 0 36 36">
+                  <path class="scroll-roll" d="M8 8 C8 5, 12 5, 12 8 L12 28 C12 31, 8 31, 8 28 Z" />
+                  <path class="scroll-sheet" d="M12 9 L26 9 C28 9, 29 10, 29 12 L29 27 C29 29, 28 30, 26 30 L12 30" />
+                  <line class="scroll-line sl1" x1="15" y1="14" x2="24" y2="14" />
+                  <line class="scroll-line sl2" x1="15" y1="18" x2="22" y2="18" />
+                  <line class="scroll-line sl3" x1="15" y1="22" x2="25" y2="22" />
+                </svg>
+              </div>
+              <span class="path-caption">Ancient Origin</span>
             </button>
-            <button class="path-btn" data-path="path-ingredients">
-              <span class="path-icon">🌾</span>
-              <span class="path-text">2. Core Ingredients</span>
+
+            <!-- 2. Core Ingredients -->
+            <button class="path-btn" data-path="path-ingredients" aria-label="Core Ingredients" title="Core Ingredients">
+              <div class="path-anim anim-grains" aria-hidden="true">
+                <span class="grain grain-dal g1"></span>
+                <span class="grain grain-rice g2"></span>
+                <span class="grain grain-dal g3"></span>
+                <span class="grain grain-rice g4"></span>
+              </div>
+              <span class="path-caption">Core Ingredients</span>
             </button>
-            <button class="path-btn" data-path="path-ferment">
-              <span class="path-icon">🫧</span>
-              <span class="path-text">3. Fermentation</span>
+
+            <!-- 3. Fermentation -->
+            <button class="path-btn" data-path="path-ferment" aria-label="Fermentation" title="Fermentation">
+              <div class="path-anim anim-bubbles" aria-hidden="true">
+                <span class="bubble-micro bm1"></span>
+                <span class="bubble-micro bm2"></span>
+                <span class="bubble-micro bm3"></span>
+                <span class="bubble-micro bm4"></span>
+              </div>
+              <span class="path-caption">Fermentation</span>
             </button>
-            <button class="path-btn" data-path="path-steam">
-              <span class="path-icon">♨️</span>
-              <span class="path-text">4. Steaming Physics</span>
+
+            <!-- 4. Steaming Physics -->
+            <button class="path-btn" data-path="path-steam" aria-label="Steaming Physics" title="Steaming Physics">
+              <div class="path-anim anim-steam" aria-hidden="true">
+                <span class="steam-line st1"></span>
+                <span class="steam-line st2"></span>
+                <span class="steam-line st3"></span>
+              </div>
+              <span class="path-caption">Steaming Physics</span>
             </button>
           </div>
 
@@ -119,7 +141,7 @@
             <div class="path-content active" id="path-origin">
               <h4>From <em>Iddalige</em> to the Modern Plate</h4>
               <p>
-                The earliest recorded mention of the idli appears in the Kannada text <em>Vaddaradhane</em> by Sivakotiacharya in 920 CE as <strong>Iddalige</strong> — fermented urad dal batter seasoned with cumin and coriander. Later, the Sanskrit encyclopedia <em>Manasollasa</em> (1130 CE) describes <em>Iddarika</em>. The technique of steaming via perforated plates likely arrived in the 8th century, transforming dense cakes into the airy clouds we revere today.
+                The earliest recorded mention of the idli appears in the Kannada text <em>Vaddaradhane</em> by Sivakotiacharya in 920 CE as <strong>Iddalige</strong> — fermented urad dal batter seasoned with cumin and coriander. Later, the Sanskrit encyclopedia <em>Manasollasa</em> (1130 CE) describes <em>Iddarika</em>. The technique of steaming via perforated plates arrived in the medieval era, transforming dense cakes into the airy clouds we revere today.
               </p>
             </div>
             <div class="path-content" id="path-ingredients">
@@ -143,152 +165,129 @@
           </div>
         </div>
 
-        <!-- Feature B: Interactive Evolution Timeline -->
-        <div class="lore-card">
+        <!-- Sequential Cooking Mini-Game (Item 7) -->
+        <div class="lore-card cooking-game-card">
           <div class="lore-header">
-            <span class="module-tag">Feature B</span>
-            <h3>Interactive Evolution Timeline</h3>
-            <p class="lore-sub">Click any era to reveal the technological leap of that period:</p>
-          </div>
-
-          <div class="timeline-container">
-            <div class="timeline-step active" data-era="era-ancient">
-              <div class="era-dot"></div>
-              <span class="era-year">920 CE</span>
-              <span class="era-name">Ancient Iddalige</span>
-            </div>
-            <div class="timeline-step" data-era="era-medieval">
-              <div class="era-dot"></div>
-              <span class="era-year">1130 CE</span>
-              <span class="era-name">Manasollasa Era</span>
-            </div>
-            <div class="timeline-step" data-era="era-modern">
-              <div class="era-dot"></div>
-              <span class="era-year">20th Century</span>
-              <span class="era-name">Stainless Steel Molds</span>
-            </div>
-            <div class="timeline-step" data-era="era-ai">
-              <div class="era-dot"></div>
-              <span class="era-year">Present Day</span>
-              <span class="era-name">AI-Judged Idli</span>
-            </div>
-          </div>
-
-          <div class="era-detail-box" id="eraDetailBox">
-            <h4 id="eraDetailTitle">920 CE — Sivakotiacharya's Vaddaradhane</h4>
-            <p id="eraDetailDesc">
-              Batter consisted solely of urad dal soaked in buttermilk and seasoned with crushed pepper. Steamed in cloth over earthen pots, producing a rich, protein-dense ceremonial delicacy.
+            <h3>Interactive Kitchen: Sequential Idli Craft</h3>
+            <p class="lore-sub">
+              Progress through each ingredient in order to build the batter in the mixing bowl, then steam cook your idli!
             </p>
           </div>
-        </div>
 
-        <!-- Feature C: Interactive Ingredient Exploration -->
-        <div class="lore-card">
-          <div class="lore-header">
-            <span class="module-tag">Feature C</span>
-            <h3>Ingredient Personalities & Their Science</h3>
-            <p class="lore-sub">Click any ingredient card to hear its humorous, first-person leavening duty:</p>
+          <!-- Step Cards Grid (Fixed Sequence) -->
+          <div class="cooking-cards-grid">
+            <!-- Step 1: Urad Dal -->
+            <button type="button" class="cook-card active" id="cookCardUrad" data-step="1" aria-label="Step 1: Add Urad Dal">
+              <div class="cook-card-header">
+                <span class="cook-step-pill">Step 1</span>
+                <span class="cook-status-icon" id="statusIconUrad">⏳ Active</span>
+              </div>
+              <div class="cook-card-body">
+                <div class="cook-ing-emoji">🫘</div>
+                <h4>Urad Dal</h4>
+                <p class="cook-personality">
+                  "I am Urad Gota. Without my globulins and arabinogalactan mucilage, you don't have an idli — you have an edible doorstop. I trap every single CO₂ bubble with my life!"
+                </p>
+                <p class="cook-science">
+                  <strong>Role:</strong> Surface-active foam protein matrix that encapsulates fermentation gases into an airy crumb structure.
+                </p>
+              </div>
+              <div class="cook-card-footer">
+                <span class="cook-prompt">Click to Add &darr;</span>
+              </div>
+            </button>
+
+            <!-- Step 2: Parboiled Rice -->
+            <button type="button" class="cook-card locked" id="cookCardRice" data-step="2" disabled aria-label="Step 2: Add Parboiled Rice (Locked)">
+              <div class="cook-card-header">
+                <span class="cook-step-pill">Step 2</span>
+                <span class="cook-status-icon" id="statusIconRice">🔒 Locked</span>
+              </div>
+              <div class="cook-card-body">
+                <div class="cook-ing-emoji">🌾 🍚</div>
+                <h4>Parboiled Rice</h4>
+                <p class="cook-personality">
+                  "Urad dal talks big, but without my parboiled amylose starch scaffolding, your idli would collapse into a puddle. I provide the structural backbone!"
+                </p>
+                <p class="cook-science">
+                  <strong>Role:</strong> Supplies crystalline starch that absorbs water and gelatinizes at 100°C steam heat.
+                </p>
+              </div>
+              <div class="cook-card-footer">
+                <span class="cook-prompt">Locked</span>
+              </div>
+            </button>
+
+            <!-- Step 3: Water & Salt -->
+            <button type="button" class="cook-card locked" id="cookCardWaterSalt" data-step="3" disabled aria-label="Step 3: Add Water and Salt (Locked)">
+              <div class="cook-card-header">
+                <span class="cook-step-pill">Step 3</span>
+                <span class="cook-status-icon" id="statusIconWaterSalt">🔒 Locked</span>
+              </div>
+              <div class="cook-card-body">
+                <div class="cook-ing-emoji">💧 🧂</div>
+                <h4>Water & Salt</h4>
+                <p class="cook-personality">
+                  "Use ice-cold water during grinding to keep protein bonds cool and airy. Add non-iodized sea salt to nurture lactic acid bacteria while holding rogue fungi at bay!"
+                </p>
+                <p class="cook-science">
+                  <strong>Role:</strong> Controls osmotic pressure, batter hydration kinetics, and microbial fermentation rate.
+                </p>
+              </div>
+              <div class="cook-card-footer">
+                <span class="cook-prompt">Locked</span>
+              </div>
+            </button>
           </div>
 
-          <div class="ingredient-grid">
-            <div class="ingredient-card active" data-ingredient="urad">
-              <div class="ing-icon">🫘</div>
-              <h4>Urad Dal</h4>
-              <span class="ing-role">The Structural Architect</span>
-            </div>
-
-            <div class="ingredient-card" data-ingredient="rice">
-              <div class="ing-icon">🌾</div>
-              <h4>Parboiled Rice</h4>
-              <span class="ing-role">The Scaffolding Backbone</span>
-            </div>
-
-            <div class="ingredient-card" data-ingredient="fenugreek">
-              <div class="ing-icon">🌿</div>
-              <h4>Fenugreek (Methi)</h4>
-              <span class="ing-role">The Foam Stabilizer</span>
-            </div>
-
-            <div class="ingredient-card" data-ingredient="water">
-              <div class="ing-icon">💧</div>
-              <h4>Water & Salt</h4>
-              <span class="ing-role">The Microbial Catalyst</span>
-            </div>
-          </div>
-
-          <div class="ingredient-quote-box" id="ingredientQuoteBox">
-            <p class="ing-quote" id="ingQuoteText">
-              "Look at me. I am Urad Gota. Without my globulins and arabinogalactan mucilage, you don't have an idli — you have an edible doorstop. I trap every single CO₂ bubble with my life!"
-            </p>
-            <span class="ing-author" id="ingAuthorText">&mdash; Urad Dal, Chief Fluffiness Officer</span>
-          </div>
-        </div>
-
-        <!-- Feature D: Fermentation Mini-Game -->
-        <div class="lore-card game-card">
-          <div class="lore-header">
-            <span class="module-tag">Feature D</span>
-            <h3>The Fermentation Mini-Game</h3>
-            <p class="lore-sub">Simulate natural bacterial leavening! Drag the temperature slider or press "Ferment Step" to watch the batter rise and form CO₂ aeration chambers.</p>
-          </div>
-
-          <div class="minigame-layout">
-            <div class="vessel-wrapper">
-              <div class="ferment-vessel">
-                <div class="batter-liquid" id="batterLiquid" style="height: 35%;">
-                  <div class="bubble-container" id="bubbleContainer">
-                    <span class="bubble b1"></span>
-                    <span class="bubble b2"></span>
-                    <span class="bubble b3"></span>
+          <!-- Staging Arena: Sliding Bowl, Particles, and Cooking Station -->
+          <div class="cooking-staging-arena">
+            <div class="bowl-track" id="bowlTrack">
+              <div class="mixing-bowl" id="mixingBowl">
+                <div class="bowl-rim"></div>
+                <div class="bowl-body">
+                  <div class="bowl-contents" id="bowlContents">
+                    <span class="content-item item-dal hidden" id="itemDal">🫘 🫘</span>
+                    <span class="content-item item-rice hidden" id="itemRice">🍚 🌾</span>
+                    <span class="content-item item-water hidden" id="itemWater">💧 🫧</span>
                   </div>
                 </div>
-                <div class="volume-marker mark-100">100% Vol</div>
-                <div class="volume-marker mark-75">75%</div>
-                <div class="volume-marker mark-50">50%</div>
-                <div class="volume-marker mark-25">25% (Initial)</div>
               </div>
             </div>
 
-            <div class="game-controls">
-              <div class="control-group">
-                <label for="tempSlider">Ambient Temperature: <strong id="tempDisplay">30°C (Optimal)</strong></label>
-                <input type="range" id="tempSlider" min="15" max="45" value="30" class="styled-slider">
-                <span class="slider-hint">Cold (&lt;22°C) stalls growth; Extreme Heat (&gt;40°C) kills bacteria.</span>
-              </div>
+            <!-- Particles Emitter Container -->
+            <div class="particle-emitter" id="particleEmitter" aria-hidden="true"></div>
 
-              <div class="game-stats">
-                <div class="stat-pill">
-                  <span class="stat-lbl">Fermentation</span>
-                  <span class="stat-val" id="fermentPercent">35%</span>
-                </div>
-                <div class="stat-pill">
-                  <span class="stat-lbl">Bacterial Flora</span>
-                  <span class="stat-val" id="floraStatus">Lactobacillus Active</span>
-                </div>
-                <div class="stat-pill">
-                  <span class="stat-lbl">Batter Status</span>
-                  <span class="stat-val" id="batterStatus">Rising...</span>
-                </div>
-              </div>
+            <!-- Cooking Transition: Steam/Smoke Cloud -->
+            <div class="smoke-cloud hidden" id="smokeCloud" aria-hidden="true">
+              <span class="smoke-puff sp1"></span>
+              <span class="smoke-puff sp2"></span>
+              <span class="smoke-puff sp3"></span>
+            </div>
 
-              <div class="game-btn-row">
-                <button type="button" class="btn-secondary" id="advanceFermentBtn">+ Advance 4 Hours</button>
-                <button type="button" class="btn-secondary" id="resetFermentBtn">Reset Batter</button>
-              </div>
+            <!-- Finished Idli Reveal -->
+            <div class="finished-idli-reveal hidden" id="idliReveal">
+              <div class="reveal-halo"></div>
+              <img src="assets/idli.png" alt="Finished Steamed Idli" class="revealed-idli-img">
+              <h4 class="reveal-title">Steamed to Fluffy Perfection!</h4>
+              <p class="reveal-desc">Fresh, aromatic, and perfectly leavened. Ready for computer vision inspection!</p>
+            </div>
 
-              <div class="ferment-celebration hidden" id="fermentCelebration">
-                <div class="celeb-badge">✨ Fermentation Complete!</div>
-                <p>Batter volume has doubled with dense microscopic gas pores. Ready for precision computer vision analysis!</p>
-                <button type="button" class="btn-primary" id="transitionToAnalyzerBtn">Proceed to The Analyzer &rarr;</button>
-              </div>
+            <!-- Controls Row -->
+            <div class="cooking-controls">
+              <button type="button" class="btn-primary hidden" id="btnCook">
+                <span>♨️ Cook Idli</span>
+              </button>
+              <button type="button" class="btn-secondary hidden" id="btnResetCooking">
+                <span>🔄 Reset Kitchen</span>
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- Feature E: Closing Narrative Beat -->
+        <!-- Closing Narrative Beat -->
         <div class="lore-card cta-card">
           <div class="cta-inner">
-            <span class="module-tag">Feature E &bull; The Question of Perfection</span>
             <h3>What makes an idli truly great?</h3>
             <p>
               Is it merely fluffiness? Or is it the calibrated 8.0 cm diameter, concentric symmetry, and micro-pore aeration that separates casual breakfast from pure culinary engineering?
@@ -307,7 +306,7 @@
       <!-- ==================================================================== -->
       <!-- TAB 2: THE ANALYZER (Phases 2–7 Image Upload & CV Processing)         -->
       <!-- ==================================================================== -->
-      <section class="tab-pane active" id="tab-analyzer">
+      <section class="tab-pane" id="tab-analyzer">
         <div class="section-intro">
           <div class="intro-pill">Precision Computer Vision Pipeline</div>
           <h2>Upload Your Idli for Deterministic Analysis</h2>

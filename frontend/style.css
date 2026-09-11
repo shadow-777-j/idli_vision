@@ -78,48 +78,33 @@ body {
 .main-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 2rem;
-  flex-wrap: wrap;
+  padding-bottom: 1.5rem;
   gap: 1.5rem;
 }
 
-.brand-badge {
-  display: inline-flex;
+.brand-identity {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid var(--border-accent);
-  padding: 0.3rem 0.8rem;
-  border-radius: var(--radius-full);
-  margin-bottom: 0.75rem;
+  gap: 1.25rem;
 }
 
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-amber);
-  box-shadow: 0 0 10px var(--color-amber);
-  animation: pulse 2s infinite;
+.header-logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 10px rgba(245, 158, 11, 0.3));
+  transition: transform var(--transition-fast);
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.badge-text {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-amber-light);
+.header-logo:hover {
+  transform: rotate(-4deg) scale(1.06);
 }
 
 .logo-title {
-  font-size: 2.75rem;
+  font-size: 2.2rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -132,37 +117,9 @@ body {
 
 .tagline {
   color: var(--color-muted);
-  font-size: 0.95rem;
-  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
   font-weight: 400;
-}
-
-.system-status {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-subtle);
-  padding: 0.6rem 1.1rem;
-  border-radius: var(--radius-full);
-}
-
-.status-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.status-indicator.online {
-  background: var(--color-emerald);
-  box-shadow: 0 0 12px var(--color-emerald);
-}
-
-.status-text {
-  font-size: 0.825rem;
-  font-weight: 600;
-  color: var(--color-ivory);
 }
 
 /* Flow Navigation */
@@ -728,7 +685,9 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* Path Buttons */
+/* ------------------------------------------------------------- */
+/* Item 4: Animated Path Buttons                                 */
+/* ------------------------------------------------------------- */
 .path-buttons {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -738,30 +697,235 @@ body {
 
 .path-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-subtle);
   color: var(--color-muted);
-  padding: 0.85rem 1rem;
+  padding: 1.25rem 1rem;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
-  font-family: var(--font-main);
-  font-weight: 600;
-  font-size: 0.85rem;
+  position: relative;
+  min-height: 86px;
 }
 
 .path-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   color: var(--color-ivory);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .path-btn.active {
   background: rgba(245, 158, 11, 0.15);
   border-color: var(--border-accent);
   color: var(--color-amber-light);
-  box-shadow: 0 0 15px var(--color-amber-glow);
+  box-shadow: 0 0 20px var(--color-amber-glow);
+}
+
+.path-btn:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 3px;
+}
+
+/* Accessible label revealed cleanly on hover, focus, or active state */
+.path-caption {
+  position: absolute;
+  bottom: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-amber-light);
+  opacity: 0;
+  transform: translateY(3px);
+  transition: all var(--transition-fast);
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.path-btn:hover .path-caption,
+.path-btn:focus-visible .path-caption,
+.path-btn.active .path-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animations Container */
+.path-anim {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 1. Ancient Scroll Animation */
+.scroll-svg {
+  width: 36px;
+  height: 36px;
+  stroke: var(--color-amber);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: scrollPulse 3s infinite ease-in-out;
+}
+
+.scroll-roll {
+  fill: rgba(245, 158, 11, 0.2);
+}
+
+.scroll-sheet {
+  fill: rgba(245, 158, 11, 0.08);
+}
+
+.scroll-line {
+  stroke: var(--color-amber-light);
+  stroke-dasharray: 10;
+  animation: lineShimmer 2s infinite linear;
+}
+
+.sl2 { animation-delay: 0.4s; }
+.sl3 { animation-delay: 0.8s; }
+
+@keyframes scrollPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.2)); }
+  50% { transform: scale(1.05); filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.5)); }
+}
+
+@keyframes lineShimmer {
+  0% { stroke-dashoffset: 20; opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.4; }
+}
+
+/* 2. Core Grains Animation */
+.anim-grains {
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.grain {
+  position: absolute;
+  border-radius: var(--radius-full);
+}
+
+.grain-dal {
+  width: 10px;
+  height: 10px;
+  background: var(--color-amber);
+  box-shadow: 0 0 6px var(--color-amber);
+}
+
+.grain-rice {
+  width: 5px;
+  height: 14px;
+  background: #f8fafc;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+.g1 {
+  top: 6px;
+  left: 6px;
+  animation: grainOrbit 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.g2 {
+  top: 6px;
+  right: 6px;
+  transform: rotate(30deg);
+  animation: grainOrbit 3s infinite cubic-bezier(0.4, 0, 0.2, 1) 0.75s;
+}
+
+.g3 {
+  bottom: 6px;
+  right: 6px;
+  animation: grainOrbit 3s infinite cubic-bezier(0.4, 0, 0.2, 1) 1.5s;
+}
+
+.g4 {
+  bottom: 6px;
+  left: 6px;
+  transform: rotate(-30deg);
+  animation: grainOrbit 3s infinite cubic-bezier(0.4, 0, 0.2, 1) 2.25s;
+}
+
+@keyframes grainOrbit {
+  0% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(10px, -6px) scale(1.15); }
+  50% { transform: translate(14px, 12px) scale(1); }
+  75% { transform: translate(-8px, 10px) scale(0.85); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* 3. Fermentation Bubbles Animation */
+.anim-bubbles {
+  width: 36px;
+  height: 36px;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+}
+
+.bubble-micro {
+  position: absolute;
+  bottom: -6px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  opacity: 0.8;
+  animation: microBubbleFloat 2.4s infinite ease-in;
+}
+
+.bm1 { width: 6px; height: 6px; left: 6px; animation-duration: 2.2s; }
+.bm2 { width: 8px; height: 8px; left: 16px; animation-duration: 1.8s; animation-delay: 0.6s; }
+.bm3 { width: 5px; height: 5px; left: 24px; animation-duration: 2.5s; animation-delay: 1.2s; }
+.bm4 { width: 7px; height: 7px; left: 12px; animation-duration: 2s; animation-delay: 1.5s; }
+
+@keyframes microBubbleFloat {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.9; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-42px); opacity: 0; }
+}
+
+/* 4. Steaming Physics Animation */
+.anim-steam {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.steam-line {
+  width: 3px;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.8), transparent);
+  animation: steamRise 1.8s infinite ease-in-out;
+}
+
+.st1 { animation-delay: 0s; height: 18px; }
+.st2 { animation-delay: 0.4s; height: 26px; }
+.st3 { animation-delay: 0.8s; height: 20px; }
+
+@keyframes steamRise {
+  0% { transform: translateY(6px) scaleY(0.6); opacity: 0.2; }
+  50% { transform: translateY(-3px) scaleY(1); opacity: 0.9; }
+  100% { transform: translateY(-12px) scaleY(1.3); opacity: 0; }
+}
+
+.path-btn:hover .path-anim {
+  transform: scale(1.12);
+  transition: transform var(--transition-fast);
 }
 
 .path-display {
@@ -791,288 +955,350 @@ body {
   font-size: 0.95rem;
 }
 
-/* Timeline */
-.timeline-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  position: relative;
-  margin: 2rem 0;
-  gap: 1rem;
-}
-
-.timeline-container::before {
-  content: '';
-  position: absolute;
-  top: 10px;
-  left: 5%;
-  right: 5%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.15);
-  z-index: 0;
-}
-
-.timeline-step {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  cursor: pointer;
-}
-
-.era-dot {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--bg-core);
-  border: 3px solid var(--color-muted);
-  transition: all var(--transition-fast);
-  margin-bottom: 0.75rem;
-}
-
-.timeline-step:hover .era-dot {
-  border-color: var(--color-amber-light);
-}
-
-.timeline-step.active .era-dot {
-  background: var(--color-amber);
-  border-color: var(--color-ivory);
-  box-shadow: 0 0 15px var(--color-amber);
-}
-
-.era-year {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: var(--color-amber-light);
-}
-
-.era-name {
-  font-size: 0.8rem;
-  color: var(--color-muted);
-  margin-top: 0.2rem;
-}
-
-.era-detail-box {
-  background: rgba(9, 13, 18, 0.6);
+/* ------------------------------------------------------------- */
+/* Item 7: Sequential Cooking Mini-Game Styles                   */
+/* ------------------------------------------------------------- */
+.cooking-game-card {
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-bottom: 2rem;
 }
 
-.era-detail-box h4 {
-  font-size: 1.15rem;
-  color: var(--color-amber-light);
-  margin-bottom: 0.4rem;
-}
-
-.era-detail-box p {
-  color: #cbd5e1;
-  font-size: 0.95rem;
-}
-
-/* Ingredients */
-.ingredient-grid {
+.cooking-cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
   margin-bottom: 1.5rem;
 }
 
-.ingredient-card {
+.cook-card {
   background: rgba(9, 13, 18, 0.5);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 1.25rem 1rem;
-  text-align: center;
+  padding: 1.25rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 240px;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-smooth);
+  font-family: var(--font-main);
+  position: relative;
 }
 
-.ingredient-card:hover {
-  background: rgba(255, 255, 255, 0.05);
+.cook-card.active {
+  border: 2px solid var(--color-amber);
+  background: rgba(245, 158, 11, 0.1);
+  box-shadow: 0 0 20px var(--color-amber-glow);
+  transform: translateY(-2px);
 }
 
-.ingredient-card.active {
-  border-color: var(--border-accent);
-  background: rgba(245, 158, 11, 0.12);
-  box-shadow: 0 0 15px var(--color-amber-glow);
+.cook-card.active:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 3px;
 }
 
-.ing-icon {
-  font-size: 2.2rem;
+.cook-card.completed {
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.08);
+  opacity: 0.85;
+  cursor: default;
+}
+
+.cook-card.locked {
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cook-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 0.5rem;
 }
 
-.ingredient-card h4 {
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
+.cook-step-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-amber-light);
+  background: rgba(245, 158, 11, 0.15);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
 }
 
-.ing-role {
+.cook-card.completed .cook-step-pill {
+  color: var(--color-emerald);
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.cook-status-icon {
   font-size: 0.75rem;
-  color: var(--color-amber-light);
-}
-
-.ingredient-quote-box {
-  background: rgba(9, 13, 18, 0.7);
-  border-left: 4px solid var(--color-amber);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  padding: 1.25rem 1.5rem;
-}
-
-.ing-quote {
-  font-size: 1.05rem;
-  font-style: italic;
-  color: #e2e8f0;
-}
-
-.ing-author {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--color-amber-light);
-  margin-top: 0.5rem;
   font-weight: 600;
-}
-
-/* Fermentation Mini-Game */
-.minigame-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 2rem;
-  align-items: center;
-}
-
-.vessel-wrapper {
-  display: flex;
-  justify-content: center;
-}
-
-.ferment-vessel {
-  position: relative;
-  width: 180px;
-  height: 260px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top: none;
-  border-radius: 0 0 30px 30px;
-  overflow: hidden;
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
-}
-
-.batter-liquid {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(to top, #e2e8f0, #f8fafc);
-  transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-}
-
-.bubble-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.bubble {
-  position: absolute;
-  bottom: -10px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(245, 158, 11, 0.4);
-  animation: rise 3s infinite ease-in;
-}
-
-.bubble.b1 { left: 20%; animation-duration: 2.5s; }
-.bubble.b2 { left: 50%; animation-duration: 3.2s; animation-delay: 1s; }
-.bubble.b3 { left: 80%; animation-duration: 2.8s; animation-delay: 1.5s; }
-
-@keyframes rise {
-  0% { transform: translateY(0); opacity: 0.8; }
-  100% { transform: translateY(-240px); opacity: 0; }
-}
-
-.volume-marker {
-  position: absolute;
-  right: 8px;
-  font-size: 0.65rem;
-  color: #64748b;
-  font-family: var(--font-mono);
-}
-
-.mark-100 { top: 10px; }
-.mark-75 { top: 70px; }
-.mark-50 { top: 130px; }
-.mark-25 { bottom: 10px; }
-
-.game-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.styled-slider {
-  width: 100%;
-  accent-color: var(--color-amber);
-  cursor: pointer;
-  margin: 0.5rem 0;
-}
-
-.slider-hint {
-  font-size: 0.775rem;
   color: var(--color-muted);
 }
 
-.game-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
+.cook-card.active .cook-status-icon {
+  color: var(--color-amber-light);
 }
 
-.stat-pill {
-  background: rgba(9, 13, 18, 0.6);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 0.75rem;
-  text-align: center;
+.cook-card.completed .cook-status-icon {
+  color: var(--color-emerald);
 }
 
-.stat-val {
-  display: block;
-  font-size: 0.95rem;
+.cook-ing-emoji {
+  font-size: 2rem;
+  margin: 0.35rem 0;
+  line-height: 1;
+}
+
+.cook-card h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-ivory);
+  margin-bottom: 0.4rem;
+}
+
+.cook-personality {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #e2e8f0;
+  line-height: 1.45;
+  margin-bottom: 0.5rem;
+}
+
+.cook-science {
+  font-size: 0.775rem;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+.cook-card-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cook-prompt {
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--color-amber-light);
-  margin-top: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.game-btn-row {
-  display: flex;
-  gap: 1rem;
+.cook-card.completed .cook-prompt {
+  color: var(--color-emerald);
 }
 
-.ferment-celebration {
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  border-radius: var(--radius-md);
-  padding: 1.25rem;
+/* Staging Arena (Bowl, Particles, Reveals) */
+.cooking-staging-arena {
+  background: rgba(9, 13, 18, 0.7);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  position: relative;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  animation: fadeIn 0.3s ease;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.ferment-celebration.hidden {
+.bowl-track {
+  position: relative;
+  width: 100%;
+  height: 110px;
+}
+
+/* Sliding Mixing Bowl */
+.mixing-bowl {
+  position: absolute;
+  top: 10px;
+  width: 130px;
+  height: 80px;
+  transition: left 0.65s cubic-bezier(0.34, 1.3, 0.64, 1);
+  /* Default position under Step 1 */
+  left: calc(16.66% - 65px);
+}
+
+.mixing-bowl.pos-step-1 {
+  left: calc(16.66% - 65px);
+}
+
+.mixing-bowl.pos-step-2 {
+  left: calc(50% - 65px);
+}
+
+.mixing-bowl.pos-step-3 {
+  left: calc(83.33% - 65px);
+}
+
+.mixing-bowl.shaking {
+  animation: bowlVibrate 0.5s ease-in-out infinite;
+}
+
+@keyframes bowlVibrate {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  20% { transform: translateX(-5px) rotate(-3deg); }
+  40% { transform: translateX(5px) rotate(3deg); }
+  60% { transform: translateX(-4px) rotate(-2deg); }
+  80% { transform: translateX(4px) rotate(2deg); }
+}
+
+.bowl-rim {
+  width: 100%;
+  height: 24px;
+  background: #334155;
+  border: 3px solid #64748b;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+}
+
+.bowl-body {
+  width: 100%;
+  height: 65px;
+  background: linear-gradient(to bottom, #1e293b, #0f172a);
+  border: 3px solid #64748b;
+  border-top: none;
+  border-radius: 0 0 65px 65px;
+  position: relative;
+  top: -12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.bowl-contents {
+  display: flex;
+  gap: 6px;
+  font-size: 1.15rem;
+  z-index: 3;
+}
+
+.content-item {
+  animation: contentPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.content-item.hidden {
   display: none;
 }
 
-.celeb-badge {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-emerald);
+@keyframes contentPop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Falling Particle Emitter */
+.particle-emitter {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.particle-drop {
+  position: absolute;
+  font-size: 1.8rem;
+  animation: fallDrop 0.65s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+@keyframes fallDrop {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(110px) scale(0.6); opacity: 0; }
+}
+
+/* Smoke / Steam Transition Effect */
+.smoke-cloud {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(248, 250, 252, 0.85) 0%, rgba(245, 158, 11, 0.4) 45%, transparent 75%);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: smokeFade 0.9s ease-out forwards;
+}
+
+.smoke-cloud.hidden {
+  display: none;
+}
+
+@keyframes smokeFade {
+  0% { opacity: 0; transform: scale(0.6); }
+  40% { opacity: 0.95; transform: scale(1.1); }
+  80% { opacity: 0.7; }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+/* Finished Idli Reveal */
+.finished-idli-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: idliRevealPop 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+  z-index: 5;
+}
+
+.finished-idli-reveal.hidden {
+  display: none;
+}
+
+@keyframes idliRevealPop {
+  0% { transform: scale(0.3); opacity: 0; filter: blur(6px); }
+  100% { transform: scale(1); opacity: 1; filter: blur(0); }
+}
+
+.revealed-idli-img {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.5));
+  margin-bottom: 0.75rem;
+  animation: pulseFloat 3s infinite ease-in-out;
+}
+
+@keyframes pulseFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.reveal-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-amber-light);
+  margin-bottom: 0.25rem;
+}
+
+.reveal-desc {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  max-width: 480px;
+}
+
+/* Cooking Controls */
+.cooking-controls {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  z-index: 15;
+}
+
+.cooking-controls .hidden {
+  display: none;
 }
 
 .cta-card {

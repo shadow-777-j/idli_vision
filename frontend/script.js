@@ -7,6 +7,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // Application State
+  // Application State
   const state = {
     topFile: null,
     sideFile: null,
@@ -14,9 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sideDataUrl: null,
     isProcessing: false,
     analysisResult: null,
-    radarChart: null,
-    fermentProgress: 35,
-    fermentTemp: 30
+    radarChart: null
   };
 
   // -------------------------------------------------------------
@@ -44,178 +43,278 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // -------------------------------------------------------------
-  // 2. Health & Backend Status Check
+  // 2. Section 6.1: Origin Story Path Exploration
   // -------------------------------------------------------------
-  const statusDot = document.getElementById('statusDot');
-  const statusText = document.getElementById('statusText');
-
-  async function checkBackendHealth() {
-    try {
-      const res = await fetch('/api/health');
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      statusDot.className = 'status-indicator online';
-      statusText.textContent = `Online: ${data.app}`;
-    } catch {
-      statusDot.className = 'status-indicator offline';
-      statusDot.style.background = '#ef4444';
-      statusDot.style.boxShadow = '0 0 10px #ef4444';
-      statusText.textContent = 'Backend Offline';
-    }
-  }
-  checkBackendHealth();
-
-  // -------------------------------------------------------------
-  // 3. Section 6.1: Interactive Origin Story & Fermentation Game
-  // -------------------------------------------------------------
-  // Feature A: Choose-Your-Path Navigation
   const pathButtons = document.querySelectorAll('.path-btn');
   const pathContents = document.querySelectorAll('.path-content');
 
   pathButtons.forEach(btn => {
     btn.addEventListener('click', () => {
-      pathButtons.forEach(b => b.classList.remove('active'));
+      pathButtons.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
       pathContents.forEach(c => c.classList.remove('active'));
+
       btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
       const targetId = btn.getAttribute('data-path');
       const targetEl = document.getElementById(targetId);
       if (targetEl) targetEl.classList.add('active');
     });
   });
 
-  // Feature B: Evolution Timeline
-  const timelineSteps = document.querySelectorAll('.timeline-step');
-  const eraDetailTitle = document.getElementById('eraDetailTitle');
-  const eraDetailDesc = document.getElementById('eraDetailDesc');
+  // -------------------------------------------------------------
+  // 3. Sequential Cooking Mini-Game (Spec Item 7)
+  // -------------------------------------------------------------
+  const cookCardUrad = document.getElementById('cookCardUrad');
+  const cookCardRice = document.getElementById('cookCardRice');
+  const cookCardWaterSalt = document.getElementById('cookCardWaterSalt');
 
-  const eraData = {
-    'era-ancient': {
-      title: "920 CE — Sivakotiacharya's Vaddaradhane",
-      desc: "Oldest recorded mention of 'Iddalige'. Batter of pure urad dal soaked in spiced buttermilk and steamed in cloth, creating a rich ceremonial cake."
-    },
-    'era-medieval': {
-      title: "1130 CE — King Someshvara III's Manasollasa",
-      desc: "Recorded as 'Iddarika'. Culinary evolution incorporated fine-milled rice grits, giving the crumb its distinct dual-phase cellular structure."
-    },
-    'era-modern': {
-      title: "20th Century — Precision Stainless Steel Molds",
-      desc: "Standardization of concentric circular tiered steamer plates. Creation of the iconic 8.0 cm circular diameter mold used across South India."
-    },
-    'era-ai': {
-      title: "Present Day — Computer Vision & AI-Judged Idli",
-      desc: "Deterministic OpenCV contour telemetry meets culinary engineering. Pixel-calibrated diameter, symmetry axis, and aeration analysis."
-    }
-  };
+  const statusIconUrad = document.getElementById('statusIconUrad');
+  const statusIconRice = document.getElementById('statusIconRice');
+  const statusIconWaterSalt = document.getElementById('statusIconWaterSalt');
 
-  timelineSteps.forEach(step => {
-    step.addEventListener('click', () => {
-      timelineSteps.forEach(s => s.classList.remove('active'));
-      step.classList.add('active');
-      const eraKey = step.getAttribute('data-era');
-      if (eraData[eraKey]) {
-        eraDetailTitle.textContent = eraData[eraKey].title;
-        eraDetailDesc.textContent = eraData[eraKey].desc;
-      }
-    });
-  });
+  const bowlTrack = document.getElementById('bowlTrack');
+  const mixingBowl = document.getElementById('mixingBowl');
+  const itemDal = document.getElementById('itemDal');
+  const itemRice = document.getElementById('itemRice');
+  const itemWater = document.getElementById('itemWater');
 
-  // Feature C: Ingredient Personalities
-  const ingredientCards = document.querySelectorAll('.ingredient-card');
-  const ingQuoteText = document.getElementById('ingQuoteText');
-  const ingAuthorText = document.getElementById('ingAuthorText');
-
-  const ingredientQuotes = {
-    'urad': {
-      quote: '"Look at me. I am Urad Gota. Without my globulins and arabinogalactan mucilage, you don\'t have an idli — you have an edible doorstop. I trap every single CO₂ bubble with my life!"',
-      author: '— Urad Dal, Chief Fluffiness Officer'
-    },
-    'rice': {
-      quote: '"Urad dal talks big, but without my parboiled amylose starch scaffolding, your idli would collapse into a puddle. I provide the structural crystalline backbone!"',
-      author: '— Parboiled Rice, Lead Structural Engineer'
-    },
-    'fenugreek': {
-      quote: '"You only need a teaspoon of me, but my galactomannan polysaccharides stabilize your foam bubbles and catalyze rapid wild yeast multiplication. Respect the methi!"',
-      author: '— Fenugreek (Methi), Biochemical Catalyst'
-    },
-    'water': {
-      quote: '"Use ice-cold water during grinding to keep protein bonds cool and airy. Add non-iodized sea salt to nurture lactic acid bacteria while holding rogue fungi at bay!"',
-      author: '— Water & Sea Salt, Microbial Mediators'
-    }
-  };
-
-  ingredientCards.forEach(card => {
-    card.addEventListener('click', () => {
-      ingredientCards.forEach(c => c.classList.remove('active'));
-      card.classList.add('active');
-      const ingKey = card.getAttribute('data-ingredient');
-      if (ingredientQuotes[ingKey]) {
-        ingQuoteText.textContent = ingredientQuotes[ingKey].quote;
-        ingAuthorText.textContent = ingredientQuotes[ingKey].author;
-      }
-    });
-  });
-
-  // Feature D: Fermentation Mini-Game
-  const batterLiquid = document.getElementById('batterLiquid');
-  const fermentPercent = document.getElementById('fermentPercent');
-  const floraStatus = document.getElementById('floraStatus');
-  const batterStatus = document.getElementById('batterStatus');
-  const tempSlider = document.getElementById('tempSlider');
-  const tempDisplay = document.getElementById('tempDisplay');
-  const advanceFermentBtn = document.getElementById('advanceFermentBtn');
-  const resetFermentBtn = document.getElementById('resetFermentBtn');
-  const fermentCelebration = document.getElementById('fermentCelebration');
-  const transitionToAnalyzerBtn = document.getElementById('transitionToAnalyzerBtn');
+  const particleEmitter = document.getElementById('particleEmitter');
+  const smokeCloud = document.getElementById('smokeCloud');
+  const idliReveal = document.getElementById('idliReveal');
+  const btnCook = document.getElementById('btnCook');
+  const btnResetCooking = document.getElementById('btnResetCooking');
   const ctaStartAnalysis = document.getElementById('ctaStartAnalysis');
 
-  function updateFermentDisplay() {
-    batterLiquid.style.height = `${state.fermentProgress}%`;
-    fermentPercent.textContent = `${state.fermentProgress}%`;
+  const cookState = {
+    currentStep: 1, // 1: Urad, 2: Rice, 3: Water/Salt, 4: Cook Ready, 5: Revealed
+    isAnimating: false
+  };
 
-    const temp = state.fermentTemp;
-    if (temp < 22) {
-      tempDisplay.textContent = `${temp}°C (Too Cold — Bacteria Sluggish)`;
-      floraStatus.textContent = 'Leuconostoc Dormant';
-      batterStatus.textContent = 'Stalled';
-    } else if (temp > 38) {
-      tempDisplay.textContent = `${temp}°C (Too Hot — Microbes Stressed)`;
-      floraStatus.textContent = 'Acid Overproduction';
-      batterStatus.textContent = 'Sour / Risk of Collapse';
-    } else {
-      tempDisplay.textContent = `${temp}°C (Optimal Fermentation)`;
-      floraStatus.textContent = 'Leuconostoc & Lactobacillus Active';
-      batterStatus.textContent = state.fermentProgress >= 90 ? 'Double Volume Reached!' : 'Actively Leavening';
-    }
+  function triggerFallingParticles(stepNumber, emojis) {
+    if (!particleEmitter) return;
+    particleEmitter.innerHTML = '';
+    const colCenters = { 1: 16.66, 2: 50, 3: 83.33 };
+    const centerPercent = colCenters[stepNumber] || 50;
 
-    if (state.fermentProgress >= 90) {
-      fermentCelebration.classList.remove('hidden');
-    } else {
-      fermentCelebration.classList.add('hidden');
-    }
+    emojis.forEach((emoji, idx) => {
+      const p = document.createElement('span');
+      p.className = 'particle-drop';
+      p.textContent = emoji;
+      const xOffset = (idx - (emojis.length - 1) / 2) * 26;
+      p.style.left = `calc(${centerPercent}% + ${xOffset}px)`;
+      p.style.top = '10px';
+      p.style.animationDelay = `${idx * 120}ms`;
+      particleEmitter.appendChild(p);
+    });
+
+    setTimeout(() => {
+      particleEmitter.innerHTML = '';
+    }, 800);
   }
 
-  tempSlider.addEventListener('input', (e) => {
-    state.fermentTemp = parseInt(e.target.value, 10);
-    updateFermentDisplay();
-  });
+  // Step 1: Add Urad Dal
+  if (cookCardUrad) {
+    cookCardUrad.addEventListener('click', () => {
+      if (cookState.currentStep !== 1 || cookState.isAnimating) return;
+      cookState.isAnimating = true;
 
-  advanceFermentBtn.addEventListener('click', () => {
-    let increment = 25;
-    if (state.fermentTemp < 22) increment = 8;
-    else if (state.fermentTemp > 38) increment = 12;
+      triggerFallingParticles(1, ['🫘', '✨', '🫘']);
 
-    state.fermentProgress = Math.min(100, state.fermentProgress + increment);
-    updateFermentDisplay();
-  });
+      setTimeout(() => {
+        if (itemDal) itemDal.classList.remove('hidden');
 
-  resetFermentBtn.addEventListener('click', () => {
-    state.fermentProgress = 25;
-    updateFermentDisplay();
-  });
+        // Mark Urad completed
+        cookCardUrad.classList.remove('active');
+        cookCardUrad.classList.add('completed');
+        cookCardUrad.disabled = true;
+        cookCardUrad.setAttribute('aria-label', 'Step 1: Urad Dal (Added to Bowl)');
+        if (statusIconUrad) statusIconUrad.textContent = '✅ Added';
+        const prompt1 = cookCardUrad.querySelector('.cook-prompt');
+        if (prompt1) prompt1.textContent = '✓ Added to Bowl';
 
-  if (transitionToAnalyzerBtn) {
-    transitionToAnalyzerBtn.addEventListener('click', () => switchTab('tab-analyzer'));
+        // Slide bowl to Step 2
+        if (mixingBowl) mixingBowl.className = 'mixing-bowl pos-step-2';
+
+        setTimeout(() => {
+          // Unlock Rice
+          cookState.currentStep = 2;
+          cookCardRice.classList.remove('locked');
+          cookCardRice.classList.add('active');
+          cookCardRice.disabled = false;
+          cookCardRice.setAttribute('aria-label', 'Step 2: Add Parboiled Rice');
+          if (statusIconRice) statusIconRice.textContent = '⏳ Active';
+          const prompt2 = cookCardRice.querySelector('.cook-prompt');
+          if (prompt2) prompt2.textContent = 'Click to Add ↓';
+          cookState.isAnimating = false;
+        }, 650);
+      }, 550);
+    });
   }
+
+  // Step 2: Add Parboiled Rice
+  if (cookCardRice) {
+    cookCardRice.addEventListener('click', () => {
+      if (cookState.currentStep !== 2 || cookState.isAnimating) return;
+      cookState.isAnimating = true;
+
+      triggerFallingParticles(2, ['🌾', '🍚', '🌾']);
+
+      setTimeout(() => {
+        if (itemRice) itemRice.classList.remove('hidden');
+
+        // Mark Rice completed
+        cookCardRice.classList.remove('active');
+        cookCardRice.classList.add('completed');
+        cookCardRice.disabled = true;
+        cookCardRice.setAttribute('aria-label', 'Step 2: Parboiled Rice (Added to Bowl)');
+        if (statusIconRice) statusIconRice.textContent = '✅ Added';
+        const prompt2 = cookCardRice.querySelector('.cook-prompt');
+        if (prompt2) prompt2.textContent = '✓ Added to Bowl';
+
+        // Slide bowl to Step 3
+        if (mixingBowl) mixingBowl.className = 'mixing-bowl pos-step-3';
+
+        setTimeout(() => {
+          // Unlock Water & Salt
+          cookState.currentStep = 3;
+          cookCardWaterSalt.classList.remove('locked');
+          cookCardWaterSalt.classList.add('active');
+          cookCardWaterSalt.disabled = false;
+          cookCardWaterSalt.setAttribute('aria-label', 'Step 3: Add Water and Salt');
+          if (statusIconWaterSalt) statusIconWaterSalt.textContent = '⏳ Active';
+          const prompt3 = cookCardWaterSalt.querySelector('.cook-prompt');
+          if (prompt3) prompt3.textContent = 'Click to Add ↓';
+          cookState.isAnimating = false;
+        }, 650);
+      }, 550);
+    });
+  }
+
+  // Step 3: Add Water and Salt
+  if (cookCardWaterSalt) {
+    cookCardWaterSalt.addEventListener('click', () => {
+      if (cookState.currentStep !== 3 || cookState.isAnimating) return;
+      cookState.isAnimating = true;
+
+      triggerFallingParticles(3, ['💧', '🧂', '🫧']);
+
+      setTimeout(() => {
+        if (itemWater) itemWater.classList.remove('hidden');
+
+        // Mark Water & Salt completed
+        cookCardWaterSalt.classList.remove('active');
+        cookCardWaterSalt.classList.add('completed');
+        cookCardWaterSalt.disabled = true;
+        cookCardWaterSalt.setAttribute('aria-label', 'Step 3: Water and Salt (Added to Bowl)');
+        if (statusIconWaterSalt) statusIconWaterSalt.textContent = '✅ Added';
+        const prompt3 = cookCardWaterSalt.querySelector('.cook-prompt');
+        if (prompt3) prompt3.textContent = '✓ Added to Bowl';
+
+        // Ingredient sequence complete -> reveal Cook button
+        cookState.currentStep = 4;
+        if (btnCook) {
+          btnCook.classList.remove('hidden');
+          btnCook.focus();
+        }
+        cookState.isAnimating = false;
+      }, 550);
+    });
+  }
+
+  // Cook Action
+  if (btnCook) {
+    btnCook.addEventListener('click', () => {
+      if (cookState.currentStep !== 4 || cookState.isAnimating) return;
+      cookState.isAnimating = true;
+      btnCook.disabled = true;
+
+      // 1. Bowl visibly shakes
+      if (mixingBowl) mixingBowl.classList.add('shaking');
+
+      // 2. Smoke / steam cloud transition
+      setTimeout(() => {
+        if (smokeCloud) smokeCloud.classList.remove('hidden');
+      }, 450);
+
+      // 3. Reveal finished idli as smoke rolls
+      setTimeout(() => {
+        if (mixingBowl) mixingBowl.classList.remove('shaking');
+        if (bowlTrack) bowlTrack.style.display = 'none';
+        btnCook.classList.add('hidden');
+        if (idliReveal) idliReveal.classList.remove('hidden');
+      }, 850);
+
+      // 4. Clear smoke & show Reset button
+      setTimeout(() => {
+        if (smokeCloud) smokeCloud.classList.add('hidden');
+        if (btnResetCooking) {
+          btnResetCooking.classList.remove('hidden');
+          btnResetCooking.focus();
+        }
+        cookState.currentStep = 5;
+        cookState.isAnimating = false;
+      }, 1250);
+    });
+  }
+
+  // Reset Kitchen Action
+  if (btnResetCooking) {
+    btnResetCooking.addEventListener('click', () => {
+      cookState.currentStep = 1;
+      cookState.isAnimating = false;
+
+      // Hide reveal and controls
+      if (idliReveal) idliReveal.classList.add('hidden');
+      if (smokeCloud) smokeCloud.classList.add('hidden');
+      btnResetCooking.classList.add('hidden');
+      if (btnCook) {
+        btnCook.classList.add('hidden');
+        btnCook.disabled = false;
+      }
+
+      // Restore bowl
+      if (bowlTrack) bowlTrack.style.display = '';
+      if (mixingBowl) mixingBowl.className = 'mixing-bowl pos-step-1';
+      if (itemDal) itemDal.classList.add('hidden');
+      if (itemRice) itemRice.classList.add('hidden');
+      if (itemWater) itemWater.classList.add('hidden');
+
+      // Reset Card 1 (Urad Dal)
+      if (cookCardUrad) {
+        cookCardUrad.className = 'cook-card active';
+        cookCardUrad.disabled = false;
+        cookCardUrad.setAttribute('aria-label', 'Step 1: Add Urad Dal');
+        if (statusIconUrad) statusIconUrad.textContent = '⏳ Active';
+        const prompt1 = cookCardUrad.querySelector('.cook-prompt');
+        if (prompt1) prompt1.textContent = 'Click to Add ↓';
+      }
+
+      // Reset Card 2 (Parboiled Rice)
+      if (cookCardRice) {
+        cookCardRice.className = 'cook-card locked';
+        cookCardRice.disabled = true;
+        cookCardRice.setAttribute('aria-label', 'Step 2: Add Parboiled Rice (Locked)');
+        if (statusIconRice) statusIconRice.textContent = '🔒 Locked';
+        const prompt2 = cookCardRice.querySelector('.cook-prompt');
+        if (prompt2) prompt2.textContent = 'Locked';
+      }
+
+      // Reset Card 3 (Water & Salt)
+      if (cookCardWaterSalt) {
+        cookCardWaterSalt.className = 'cook-card locked';
+        cookCardWaterSalt.disabled = true;
+        cookCardWaterSalt.setAttribute('aria-label', 'Step 3: Add Water and Salt (Locked)');
+        if (statusIconWaterSalt) statusIconWaterSalt.textContent = '🔒 Locked';
+        const prompt3 = cookCardWaterSalt.querySelector('.cook-prompt');
+        if (prompt3) prompt3.textContent = 'Locked';
+      }
+    });
+  }
+
+  // CTA to Analyzer
   if (ctaStartAnalysis) {
     ctaStartAnalysis.addEventListener('click', () => switchTab('tab-analyzer'));
   }
