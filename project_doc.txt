@@ -1,0 +1,611 @@
+# Idli Vision — Technical Build Specification
+
+## Document Purpose
+
+This document is a complete technical and product specification for a project named "Idli Vision." It is intended to be handed to an AI development agent (or a human engineering team) as the authoritative source of truth for scope, architecture, sequencing, and quality expectations. The agent should treat this as a contract: build incrementally, verify each stage before proceeding, and avoid unauthorized architectural substitutions.
+
+The tone of the final product should be polished, intentional, and playful in a controlled way — not a generic student CRUD project, and not a joke thrown together without engineering rigor. The specification below intentionally separates "what must be true of the engineering" from "what must be true of the user experience," because both matter equally to the outcome.
+
+---
+
+## 1. Project Summary
+
+Idli Vision is a full-stack web application that:
+
+1. Accepts photographs of a steamed idli (a South Indian steamed rice cake) from a user.
+2. Uses a Python and OpenCV computer vision pipeline to extract real, measurable physical characteristics from those photographs (not guesses, not hallucinated numbers).
+3. Converts those measurements into a set of explainable quality scores using a dedicated scoring engine.
+4. Presents the results as a polished, visual "quality report," including annotated images showing exactly what the computer vision system detected.
+5. Passes the structured scoring data to an AI language model ("the Idli Coach") which produces a distinct, entertaining, but ultimately genuinely useful commentary and improvement plan based on the actual numbers — never inventing measurements of its own.
+
+The project deliberately leans into being an "over-engineered but genuinely functional" demonstration piece: it should read as a serious full-stack and computer-vision engineering exercise wrapped in a lighthearted subject.
+
+---
+
+## 2. Governing Development Rules
+
+These rules apply for the entire duration of the build and take precedence over convenience or speed.
+
+### Rule 1 — Incremental delivery only
+
+The system must be built in clearly defined phases (see Section 9). At the end of each phase, the agent must:
+
+- Run and test the implementation.
+- Confirm the feature set for that phase actually functions.
+- Explain, in plain language, what was implemented.
+- Identify any defects or limitations discovered.
+- Resolve defects before beginning the next phase.
+- Explicitly report completion and wait for confirmation before continuing.
+
+No phase may be silently skipped or merged into another without explicit approval.
+
+### Rule 2 — Architecture is fixed unless justified
+
+The architecture defined in Section 3 is mandatory. If the agent believes a deviation is technically necessary, it must explain the reasoning and the trade-offs before making any change. Silent architectural substitution is not permitted.
+
+### Rule 3 — No unnecessary complexity
+
+At every phase, the guiding question is: "What is the smallest implementation that proves this feature works?" Build that first, then refine. Do not introduce, unless a genuine need is identified and explained:
+
+- Databases
+- Authentication systems
+- Microservices
+- Docker or container orchestration
+- Heavyweight state-management libraries
+- Frameworks not already specified in this document
+
+This is a local, full-stack demonstration application — not a production SaaS platform.
+
+### Rule 4 — Transparency and verification
+
+The agent must never assume an instruction "should work" without verifying it. If a command or implementation fails, the agent must diagnose the actual error rather than speculating. Nothing should be reported as complete without having been run and observed.
+
+### Rule 5 — Workspace inspection before action
+
+Before writing any code, the agent must inspect the existing workspace and report:
+
+- Operating system
+- Existing files and folder structure
+- Existing `package.json`, if any
+- Existing Git configuration
+- Installed Node.js version
+- Installed Python version
+- Whether OpenCV is already installed
+- Whether the project is empty or already contains code
+
+Existing files must never be deleted or overwritten without first flagging the conflict and explaining the resolution.
+
+### Rule 6 — Explain technical decisions
+
+For every significant technical decision, the agent should briefly explain:
+
+- What is being done
+- Why it is being done this way
+- Where the code lives
+- How to test it
+
+Large, unexplained code dumps are not acceptable. Prefer small, complete, well-explained changes. Terminal instructions must be clearly labeled by environment, for example:
+
+```
+Run this in PowerShell
+Run this inside the Python virtual environment
+Add this to .env
+```
+
+---
+
+## 3. System Architecture
+
+```
+Frontend (HTML, CSS, JavaScript)
+        |
+        v
+Backend (Node.js, Express)
+        |
+        v
+Computer Vision (Python, OpenCV)
+        |
+        v
+Analysis Results
+        |
+        v
+Scoring Engine
+        |
+        v
+Gemini API
+        |
+        v
+Idli Coach (conversational layer)
+```
+
+This pipeline must not be collapsed or rerouted (for example, calling Gemini directly from the browser, or asking Gemini to perform measurements that OpenCV can perform deterministically) without prior discussion and approval.
+
+---
+
+## 4. Technology Stack
+
+**Frontend**
+- HTML, CSS, vanilla JavaScript
+- No React or other frontend framework unless explicitly requested later
+- Chart.js for data visualization (radar charts, comparison charts)
+
+**Backend**
+- Node.js
+- Express
+- Multer for file upload handling
+
+**Computer Vision**
+- Python
+- OpenCV
+- NumPy where useful for numerical operations
+
+**AI Layer**
+- Gemini API, called exclusively from the backend
+- The API key must never be present in any frontend code, HTML, client bundle, or committed file
+
+**Data**
+- JSON for structured data exchange between all layers; no database required for this scope
+
+**Version Control**
+- Git and GitHub
+
+---
+
+## 5. Project Structure
+
+```
+idli-vision/
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+├── backend/
+│   ├── server.js
+│   ├── routes/
+│   │   └── analyze.js
+│   ├── services/
+│   │   ├── visionService.js
+│   │   ├── scoringService.js
+│   │   └── geminiService.js
+│   └── uploads/
+├── vision/
+│   ├── analyzer.py
+│   ├── requirements.txt
+│   └── (supporting modules as needed)
+├── package.json
+├── .gitignore
+└── README.md
+```
+
+Additional files or directories may be added as genuinely necessary, but the overall structure should remain legible and should not fragment into an unreasonable number of modules for what this project needs.
+
+---
+
+## 6. Product Experience Flow
+
+The finished application should walk a user through the following sequence, feeling like one coherent journey rather than a set of disconnected pages:
+
+```
+Landing
+   -> Interactive idli origin story
+   -> Analyze your idli
+   -> Computer vision analysis
+   -> Idli quality report
+   -> Optional comparison mode
+   -> Idli Coach
+   -> Roast plus genuine advice
+   -> Improvement plan
+   -> Analyze another idli
+```
+
+### 6.1 Interactive Origin Story
+
+This section must eventually include five distinct features:
+
+**A. Choose-your-path navigation.** Present the user with branching options rather than a single linear scroll, for example:
+
+```
+Where do you want to go?
+- Origin
+- Ingredients
+- Fermentation
+- Steaming
+```
+
+Each option opens its own interactive mini-section. The objective is to make the user feel like they are exploring rather than reading a static page.
+
+**B. Interactive evolution timeline.** A visual, clickable timeline spanning from historical origin to the present, conceptually:
+
+```
+Past -----------------------------> Present
+Ancient -> Traditional -> Modern -> AI-Judged Idli
+```
+
+Clicking a stage reveals contextual information and/or a supporting animation.
+
+**C. Interactive ingredient exploration.** Present core ingredients (rice, urad dal, water, salt) as elements the user can click or interact with, each responding with a short, humorous, first-person explanation of its role. For example, urad dal explaining that it is responsible for the idli's fluffiness. Tone may be light, but content should remain accurate.
+
+**D. Fermentation mini-game.** An interactive sequence in which the user progresses a fermentation percentage from 0 to 100, with a visual representation of batter rising as the percentage increases. On completion, display a clear "fermentation complete" state that transitions the user toward the analyzer stage.
+
+**E. Closing narrative beat.** A short concluding message posing the question of what makes a perfect idli, followed by a clear call-to-action button that transitions the user into the analysis stage.
+
+---
+
+## 7. Idli Detection and Analysis
+
+This is the technical core of the project and must not be reduced to a single prompt asking an AI model whether an idli "looks good." All primary measurements must come from actual computer vision processing.
+
+### 7.1 The Measurement Mat (IdliQ Reference Mat)
+
+To convert pixel measurements into approximate real-world units, the project defines a physical reference mat with:
+
+- A known-size reference marker or grid for calibration
+- A contrasting background to aid segmentation
+- Clearly marked position guides
+- A designated top-view zone
+- A designated side-view zone
+- Visible scale markings
+
+Project-specific target reference values (not universal scientific standards, and must never be represented as such):
+
+```
+Reference diameter:  8.0 cm
+Reference thickness: 2.3 cm
+```
+
+### 7.2 Image Input Requirements
+
+The analyzer requires two images:
+
+- **Top view** — used to measure diameter, roundness, symmetry, deformity, hole count, and hole distribution.
+- **Side view** — used to measure thickness.
+
+The interface must clearly explain to the user why both images are required before they attempt an upload.
+
+### 7.3 Computer Vision Pipeline
+
+```
+Top image
+   -> OpenCV preprocessing
+   -> Contour detection
+   -> Diameter
+   -> Roundness
+   -> Symmetry
+   -> Deformity
+   -> Hole count
+   -> Hole distribution
+
+Side image
+   -> OpenCV preprocessing
+   -> Thickness
+
+Optional AI vision pass
+   -> Supplementary surface/visual observations only
+
+Combined output
+   -> Scoring engine
+   -> Final report
+```
+
+Gemini or any other AI model must not be used to perform measurements that OpenCV can reasonably calculate. AI is permitted only for supplementary qualitative observations, never as a substitute for deterministic measurement.
+
+### 7.4 Required Measurements and Their Explainability
+
+Every metric must be traceable through a clear pipeline of the form:
+
+```
+Input -> Processing -> Measurement -> Normalization -> Score
+```
+
+No metric may be produced by an unexplained or effectively random calculation.
+
+**Diameter** — Derived from the calibrated top-view contour, compared against the 8.0 cm project target. Example display:
+
+```
+Diameter: 7.8 cm
+Target: 8.0 cm
+Score: 91 / 100
+```
+
+**Thickness** — Derived from the calibrated side-view contour, compared against the 2.3 cm project target. Example display:
+
+```
+Thickness: 2.1 cm
+Target: 2.3 cm
+Score: 91 / 100
+```
+
+**Roundness** — Calculated using an explainable circularity metric derived from the detected contour (for example, comparison against a best-fit circle). Must not be a fabricated number.
+
+**Symmetry** — Estimated using the detected contour and a computed symmetry axis. The axis itself must be shown on the annotated output image.
+
+**Deformity** — Estimated via explainable means such as contour irregularity, deviation from a fitted circle, or edge irregularity analysis.
+
+**Hole count** — Detected via OpenCV image-processing techniques applied to the top-view surface. Must be presented as an imperfect computer-vision estimate, not a guaranteed exact count. Example:
+
+```
+Detected holes: 14
+```
+
+**Hole distribution** — A spatial analysis of whether detected holes are evenly spread across the surface, expressed as a score. Example:
+
+```
+Hole distribution: 72 / 100
+```
+
+### 7.5 Visual Detection Overlay
+
+After analysis, the application must display the user's own image annotated with what the system actually detected, which may include:
+
+- The idli contour
+- The diameter measurement line
+- The center point
+- The symmetry axis
+- Detected holes
+- Any other relevant measurement markers
+
+This overlay is a primary demonstration feature: the user should be able to see directly what the computer vision system identified, not just a set of abstract numbers.
+
+---
+
+## 8. Quality Report and Coaching Layer
+
+### 8.1 Quality Report
+
+A polished results screen presenting:
+
+- An overall score (0–100)
+- Individual metric scores: diameter, thickness, roundness, symmetry, deformity
+- Hole count and hole distribution
+- A radar chart or comparable visualization summarizing all metrics
+- A "detected issues" section listing specific, measurement-derived problems (for example, uneven shape, below-target thickness, holes concentrated on one side) rather than generic commentary
+
+Score categories (product/entertainment framing, explicitly not scientific classifications):
+
+```
+90–100:  Idli Master
+80–89:   Pretty Perfect
+70–79:   Decent Idli
+50–69:   Needs Work
+Below 50: Structural Failure
+```
+
+### 8.2 Comparison Mode
+
+An optional, user-selected mode (not the default flow) allowing two idlis to be analyzed and compared side by side across all metrics, concluding with a clear declaration of which idli performed better and why.
+
+### 8.3 The Idli Coach
+
+A conversational layer built on the Gemini API, but constrained to interpreting the structured measurement data already produced by the CV pipeline and scoring engine — never inventing its own measurements. The backend supplies Gemini with the full structured score object, for example:
+
+```json
+{
+  "overallScore": 72,
+  "diameter": 91,
+  "thickness": 63,
+  "roundness": 88,
+  "symmetry": 79,
+  "deformity": 61,
+  "holeCount": 14,
+  "holeDistribution": 72
+}
+```
+
+**Personality.** The Coach should have a consistent, humorous voice, but every response must follow this structure without exception:
+
+```
+Playful commentary
+   -> Genuine technical explanation
+   -> Practical, actionable improvement advice
+```
+
+Humor must never replace substance, and must remain lighthearted rather than genuinely insulting.
+
+**Score-specific questions.** The report screen should present buttons for common questions (for example, "Why is my roundness low?", "Why are my holes uneven?", "Why is my thickness low?"), each of which sends the relevant question along with the associated measurement data to the Coach.
+
+**"Make My Idli Better."** A prominent action that requests a ranked list of the top three improvements, explicitly tied to the user's measured weaknesses rather than generic advice.
+
+**Improvement plan.** A compact, personalized summary card pairing each detected problem with a specific corrective action, plus a stated current score, a target score, and a clear path back to analyzing another idli.
+
+---
+
+## 9. Development Phases
+
+The system must be built in the following order. Each phase must be completed, tested, and confirmed working before the next begins.
+
+1. **Foundation** — Project structure, Node/Express server, basic frontend shell, navigation skeleton, upload UI, `.gitignore`, `.env.example`, README.
+2. **Upload pipeline** — End-to-end flow from frontend upload through Multer, into a Python process, and back to the frontend as JSON. The Python stage may initially return placeholder data; the goal is to prove the full round trip works.
+3. **Measurement mat** — Define the reference marker, calibration process, top-view and side-view placement guides, and the pixel-to-centimeter conversion approach.
+4. **Idli detection** — Real OpenCV image preprocessing, background handling, thresholding/segmentation, contour extraction, and candidate selection, with visualized intermediate output.
+5. **Diameter, roundness, symmetry, deformity** — Implement and return structured measurement JSON; display results in the interface.
+6. **Side-view thickness** — Implement side-view detection and calibrated thickness calculation.
+7. **Hole detection** — Implement hole detection, counting, positional mapping, distribution scoring, and visualization.
+8. **Scoring and visualization** — Build the scoring engine, overall score computation, category assignment, radar chart, detected-issues logic, and the finished report screen.
+9. **Gemini integration** — Implement a single, clean `geminiService.js` abstraction on the backend; no scattered API calls elsewhere in the codebase.
+10. **Idli Coach** — Implement "Make My Idli Better," score-specific question handling, the roast-then-advice response pattern, and the improvement plan generation.
+11. **Experience and polish** — Finalize the origin story, choose-your-path navigation, timeline, ingredient interactions, fermentation mini-game, transitions, animations, comparison mode, loading and error states, responsiveness, and accessibility, bringing the whole product together as one coherent experience.
+
+---
+
+## 10. Security Requirements
+
+The Gemini API key must exist only on the backend server. The only acceptable data flow is:
+
+```
+Browser -> Node.js backend -> Gemini API
+```
+
+Direct calls from the browser to the Gemini API are never acceptable. The API key must never appear in:
+
+- Frontend JavaScript
+- HTML
+- Any file committed to GitHub
+- Any publicly served file
+- Client-side environment variables
+
+A server-side `.env` file must be used, `.env` must be listed in `.gitignore`, and a `.env.example` file must be provided with placeholder values.
+
+---
+
+## 11. Error Handling and Validation
+
+The application must gracefully handle all of the following without ever surfacing a raw stack trace to the user:
+
+- No image uploaded
+- Only one of the two required images uploaded
+- Invalid file type
+- Oversized image
+- Corrupted image file
+- Python process failure or crash
+- OpenCV failing to detect an idli in the frame
+- No contour found
+- No holes detected
+- Gemini API request failure
+- Missing Gemini API key
+- Backend unavailable
+- General network failure
+
+**Image validation** must check MIME type, file extension, and file size, and must not rely on filename alone. Accepted formats: `.jpg`, `.jpeg`, `.png`, `.webp`.
+
+**Upload cleanup.** Uploaded images must not be allowed to accumulate indefinitely on the server; temporary files should be deleted after processing wherever feasible.
+
+---
+
+## 12. Visual and Interaction Design Direction
+
+The application should read as Indian in cultural reference, playful in tone, technically credible, modern, and slightly absurd in concept while remaining polished in execution. It must not resemble a generic Bootstrap admin dashboard. Visual identity should draw on idli, batter, fermentation, steaming, computer vision, and AI as recurring motifs. Animation should be used with intent to support the experience, not applied indiscriminately.
+
+**Responsiveness.** The full experience, including the analysis interface, must remain usable on desktop, laptop, tablet, and mobile screen sizes.
+
+**Accessibility.** Wherever practical: semantic HTML, labeled form inputs, keyboard navigability, sufficient color contrast, meaningful alt text, real buttons rather than clickable `div` elements, and visible focus states.
+
+---
+
+## 13. Computer Vision Design Principle
+
+Every measurement must be explainable and reproducible from the image itself. No metric may be produced by a black-box or effectively random calculation. Each metric should be documentable as a pipeline, for example:
+
+```
+Contour -> Fit circle -> Calculate deviation -> Normalize -> Roundness score
+```
+
+---
+
+## 14. Scoring Engine Design
+
+The scoring logic must be kept separate from the computer vision code:
+
+```
+vision/                          -> produces raw measurements
+backend/services/scoringService.js -> converts measurements into scores
+```
+
+Score weights must be explicit and documented with a rationale for each, never assigned arbitrarily. This separation is intended to make the system straightforward to tune over time.
+
+---
+
+## 15. Division of Responsibility Between Computer Vision and AI
+
+**Computer vision (deterministic) is responsible for:**
+- Contour detection
+- Diameter measurement
+- Thickness measurement
+- Roundness, symmetry, and deformity calculation
+- Hole counting and distribution analysis wherever CV can reasonably perform it
+
+**The AI layer (Gemini) is responsible for:**
+- Natural-language explanation of results
+- Playful commentary
+- Improvement suggestions grounded in the measured data
+- Interpretation of already-computed results
+- Answering score-specific follow-up questions
+
+The AI layer must never be assigned responsibility for basic measurement, contour detection, or any calculation that computer vision can perform deterministically.
+
+---
+
+## 16. Testing Strategy
+
+A small set of test images should be assembled and used to validate the pipeline against the following scenarios:
+
+1. A well-formed, high-quality idli
+2. An irregularly shaped idli
+3. A very flat idli
+4. An unusually thick idli
+5. An idli with very few visible holes
+6. An idli with a high number of visible holes
+7. An image taken in poor lighting
+8. A slightly rotated idli
+9. An image with background interference
+10. An invalid, non-idli, or corrupted image
+
+Known limitations of the detection pipeline should be documented explicitly rather than implied.
+
+---
+
+## 17. Real-World Measurement Limitations
+
+The application must not claim that smartphone photography can perfectly measure physical dimensions without calibration. The reference mat exists specifically to mitigate this limitation. Results must be clearly and consistently described as computer-vision estimates rather than laboratory-grade measurements. Hole detection and deformity detection in particular should be understood, and communicated, as imperfect and probabilistic rather than exact.
+
+---
+
+## 18. Documentation Requirements
+
+The project README must eventually include:
+
+- Project overview
+- Feature list
+- Architecture diagram/description
+- Folder structure
+- System requirements
+- Installation instructions
+- Node.js setup
+- Python setup
+- OpenCV dependency installation
+- Gemini API key setup
+- Environment variable reference
+- Instructions for running locally
+- Testing instructions
+- Known limitations
+- Deployment notes
+- Future improvement ideas
+
+---
+
+## 19. Final Success Criteria
+
+The completed application must allow a user to:
+
+1. Explore the interactive origin story.
+2. Learn about the evolution of idli through the interactive timeline.
+3. Interact with individual ingredients.
+4. Play the fermentation mini-game.
+5. Reach the analyzer.
+6. Upload a top-view image.
+7. Upload a side-view image.
+8. Have both images processed through the OpenCV pipeline.
+9. View the annotated detection overlays.
+10. See computed values for diameter, thickness, roundness, symmetry, deformity, hole count, and hole distribution.
+11. Receive an overall score.
+12. View a complete, visual quality report.
+13. Optionally compare two separate idli analyses.
+14. Ask the Idli Coach follow-up questions about their results.
+15. Receive playful commentary tied to their actual scores.
+16. Receive genuinely useful, measurement-grounded improvement suggestions.
+17. Receive a personalized improvement plan with a stated current score and target score.
+18. Return to analyze another idli.
+
+---
+
+## 20. Initial Engagement Instructions for the Build Agent
+
+Before writing any code, the agent must:
+
+1. Inspect the current workspace.
+2. Report existing files, installed tool versions (Node.js, Python), presence of OpenCV, and existing Git configuration.
+3. Propose the specific Phase 1 changes based on those findings.
+4. Implement Phase 1 only.
+5. Test Phase 1 end to end.
+6. Report the result and stop, awaiting confirmation before proceeding to Phase 2.
+
+No phase beyond Phase 1 should begin without explicit confirmation.
