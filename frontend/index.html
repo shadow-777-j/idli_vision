@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Idli Vision - Computer Vision Quality Analysis and AI Coaching for South Indian Steamed Idlis">
+  <meta name="description" content="Idli Vision - Deterministic Computer Vision Quality Analysis & AI Coaching for Steamed Idlis">
   <title>Idli Vision — AI & Computer Vision Quality Analyzer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Chart.js for Section 8.1 Radar Chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- Ambient Atmospheric Steaming Glow -->
@@ -20,35 +22,37 @@
       <div class="brand">
         <div class="brand-badge">
           <span class="pulse-dot"></span>
-          <span class="badge-text">CV &bull; OpenCV &bull; Gemini</span>
+          <span class="badge-text">OpenCV Deterministic CV &bull; Gemini AI Coach</span>
         </div>
         <h1 class="logo-title">
           <span class="logo-accent">IDLI</span> VISION
         </h1>
-        <p class="tagline">Deterministic Computer Vision Engineering &bull; Playful AI Coaching</p>
+        <p class="tagline">Deterministic Physical Measurement &bull; Calibrated Quality Scoring &bull; AI Coaching</p>
       </div>
 
-      <div class="system-status" id="systemStatus">
-        <span class="status-indicator online" id="statusDot"></span>
-        <span class="status-text" id="statusText">System Online (Phase 1)</span>
+      <div class="header-controls">
+        <div class="system-status" id="systemStatus">
+          <span class="status-indicator online" id="statusDot"></span>
+          <span class="status-text" id="statusText">System Active</span>
+        </div>
       </div>
     </header>
 
     <!-- Navigation Skeleton (Section 6 Experience Flow) -->
     <nav class="flow-nav" aria-label="Experience Journey">
-      <button class="nav-step active" data-tab="tab-analyzer" id="navAnalyzer">
-        <span class="step-num">01</span>
-        <div class="step-meta">
-          <span class="step-title">The Analyzer</span>
-          <span class="step-sub">Dual-View Upload</span>
-        </div>
-      </button>
-
       <button class="nav-step" data-tab="tab-story" id="navStory">
-        <span class="step-num">02</span>
+        <span class="step-num">01</span>
         <div class="step-meta">
           <span class="step-title">Origin & Science</span>
           <span class="step-sub">Interactive Lore</span>
+        </div>
+      </button>
+
+      <button class="nav-step active" data-tab="tab-analyzer" id="navAnalyzer">
+        <span class="step-num">02</span>
+        <div class="step-meta">
+          <span class="step-title">The Analyzer</span>
+          <span class="step-sub">Dual-View Upload</span>
         </div>
       </button>
 
@@ -71,15 +75,245 @@
 
     <!-- Main Content Area -->
     <main class="content-viewport">
-      
-      <!-- TAB 1: THE ANALYZER (Primary Upload UI) -->
+
+      <!-- ==================================================================== -->
+      <!-- TAB 1: ORIGIN & SCIENCE (Section 6.1 Interactive Origin Story)        -->
+      <!-- ==================================================================== -->
+      <section class="tab-pane" id="tab-story">
+        <div class="section-intro">
+          <div class="intro-pill">Section 6.1 Interactive Chronicle</div>
+          <h2>The Idli Origin Story & Fermentation Physics</h2>
+          <p class="intro-desc">
+            Explore South India's steam-leavened masterpiece across 1,100 years of culinary engineering and microbial fermentation.
+          </p>
+        </div>
+
+        <!-- Feature A: Choose-Your-Path Navigation -->
+        <div class="lore-card">
+          <div class="lore-header">
+            <span class="module-tag">Feature A</span>
+            <h3>Choose Your Exploration Path</h3>
+            <p class="lore-sub">Select an interactive trail to uncover specific secrets of the idli craft:</p>
+          </div>
+
+          <div class="path-buttons">
+            <button class="path-btn active" data-path="path-origin">
+              <span class="path-icon">📜</span>
+              <span class="path-text">1. Ancient Origin</span>
+            </button>
+            <button class="path-btn" data-path="path-ingredients">
+              <span class="path-icon">🌾</span>
+              <span class="path-text">2. Core Ingredients</span>
+            </button>
+            <button class="path-btn" data-path="path-ferment">
+              <span class="path-icon">🫧</span>
+              <span class="path-text">3. Fermentation</span>
+            </button>
+            <button class="path-btn" data-path="path-steam">
+              <span class="path-icon">♨️</span>
+              <span class="path-text">4. Steaming Physics</span>
+            </button>
+          </div>
+
+          <div class="path-display" id="pathDisplay">
+            <div class="path-content active" id="path-origin">
+              <h4>From <em>Iddalige</em> to the Modern Plate</h4>
+              <p>
+                The earliest recorded mention of the idli appears in the Kannada text <em>Vaddaradhane</em> by Sivakotiacharya in 920 CE as <strong>Iddalige</strong> — fermented urad dal batter seasoned with cumin and coriander. Later, the Sanskrit encyclopedia <em>Manasollasa</em> (1130 CE) describes <em>Iddarika</em>. The technique of steaming via perforated plates likely arrived in the 8th century, transforming dense cakes into the airy clouds we revere today.
+              </p>
+            </div>
+            <div class="path-content" id="path-ingredients">
+              <h4>The Molecular 4:1 Symphony</h4>
+              <p>
+                Authentic idli batter demands precision stoichiometry: <strong>4 parts parboiled rice</strong> to <strong>1 part whole de-husked urad dal (black gram)</strong>. The urad dal provides surface-active globulin proteins and mucilage that trap carbon dioxide bubbles, while the rice provides the crystalline starch scaffolding that gelatinizes during steaming.
+              </p>
+            </div>
+            <div class="path-content" id="path-ferment">
+              <h4>Heterofermentative Microbial Magic</h4>
+              <p>
+                Fermentation is driven by wild lactic acid bacteria (<em>Leuconostoc mesenteroides</em> and <em>Lactobacillus fermentum</em>) naturally resident on the grain husks. Over 8 to 14 hours at 28–32°C, these microbes produce carbon dioxide gas that inflates the batter volume by 100%, alongside subtle lactic acids that give idli its characteristic tender tang.
+              </p>
+            </div>
+            <div class="path-content" id="path-steam">
+              <h4>Thermodynamic Gelatinization at 100°C</h4>
+              <p>
+                Steaming transfers latent heat instantly without shearing forces. As steam permeates the batter mold, starch granules absorb water and swell (gelatinization), while dal proteins denature into a stable, spongy matrix that traps thousands of microscopic steam pores.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature B: Interactive Evolution Timeline -->
+        <div class="lore-card">
+          <div class="lore-header">
+            <span class="module-tag">Feature B</span>
+            <h3>Interactive Evolution Timeline</h3>
+            <p class="lore-sub">Click any era to reveal the technological leap of that period:</p>
+          </div>
+
+          <div class="timeline-container">
+            <div class="timeline-step active" data-era="era-ancient">
+              <div class="era-dot"></div>
+              <span class="era-year">920 CE</span>
+              <span class="era-name">Ancient Iddalige</span>
+            </div>
+            <div class="timeline-step" data-era="era-medieval">
+              <div class="era-dot"></div>
+              <span class="era-year">1130 CE</span>
+              <span class="era-name">Manasollasa Era</span>
+            </div>
+            <div class="timeline-step" data-era="era-modern">
+              <div class="era-dot"></div>
+              <span class="era-year">20th Century</span>
+              <span class="era-name">Stainless Steel Molds</span>
+            </div>
+            <div class="timeline-step" data-era="era-ai">
+              <div class="era-dot"></div>
+              <span class="era-year">Present Day</span>
+              <span class="era-name">AI-Judged Idli</span>
+            </div>
+          </div>
+
+          <div class="era-detail-box" id="eraDetailBox">
+            <h4 id="eraDetailTitle">920 CE — Sivakotiacharya's Vaddaradhane</h4>
+            <p id="eraDetailDesc">
+              Batter consisted solely of urad dal soaked in buttermilk and seasoned with crushed pepper. Steamed in cloth over earthen pots, producing a rich, protein-dense ceremonial delicacy.
+            </p>
+          </div>
+        </div>
+
+        <!-- Feature C: Interactive Ingredient Exploration -->
+        <div class="lore-card">
+          <div class="lore-header">
+            <span class="module-tag">Feature C</span>
+            <h3>Ingredient Personalities & Their Science</h3>
+            <p class="lore-sub">Click any ingredient card to hear its humorous, first-person leavening duty:</p>
+          </div>
+
+          <div class="ingredient-grid">
+            <div class="ingredient-card active" data-ingredient="urad">
+              <div class="ing-icon">🫘</div>
+              <h4>Urad Dal</h4>
+              <span class="ing-role">The Structural Architect</span>
+            </div>
+
+            <div class="ingredient-card" data-ingredient="rice">
+              <div class="ing-icon">🌾</div>
+              <h4>Parboiled Rice</h4>
+              <span class="ing-role">The Scaffolding Backbone</span>
+            </div>
+
+            <div class="ingredient-card" data-ingredient="fenugreek">
+              <div class="ing-icon">🌿</div>
+              <h4>Fenugreek (Methi)</h4>
+              <span class="ing-role">The Foam Stabilizer</span>
+            </div>
+
+            <div class="ingredient-card" data-ingredient="water">
+              <div class="ing-icon">💧</div>
+              <h4>Water & Salt</h4>
+              <span class="ing-role">The Microbial Catalyst</span>
+            </div>
+          </div>
+
+          <div class="ingredient-quote-box" id="ingredientQuoteBox">
+            <p class="ing-quote" id="ingQuoteText">
+              "Look at me. I am Urad Gota. Without my globulins and arabinogalactan mucilage, you don't have an idli — you have an edible doorstop. I trap every single CO₂ bubble with my life!"
+            </p>
+            <span class="ing-author" id="ingAuthorText">&mdash; Urad Dal, Chief Fluffiness Officer</span>
+          </div>
+        </div>
+
+        <!-- Feature D: Fermentation Mini-Game -->
+        <div class="lore-card game-card">
+          <div class="lore-header">
+            <span class="module-tag">Feature D</span>
+            <h3>The Fermentation Mini-Game</h3>
+            <p class="lore-sub">Simulate natural bacterial leavening! Drag the temperature slider or press "Ferment Step" to watch the batter rise and form CO₂ aeration chambers.</p>
+          </div>
+
+          <div class="minigame-layout">
+            <div class="vessel-wrapper">
+              <div class="ferment-vessel">
+                <div class="batter-liquid" id="batterLiquid" style="height: 35%;">
+                  <div class="bubble-container" id="bubbleContainer">
+                    <span class="bubble b1"></span>
+                    <span class="bubble b2"></span>
+                    <span class="bubble b3"></span>
+                  </div>
+                </div>
+                <div class="volume-marker mark-100">100% Vol</div>
+                <div class="volume-marker mark-75">75%</div>
+                <div class="volume-marker mark-50">50%</div>
+                <div class="volume-marker mark-25">25% (Initial)</div>
+              </div>
+            </div>
+
+            <div class="game-controls">
+              <div class="control-group">
+                <label for="tempSlider">Ambient Temperature: <strong id="tempDisplay">30°C (Optimal)</strong></label>
+                <input type="range" id="tempSlider" min="15" max="45" value="30" class="styled-slider">
+                <span class="slider-hint">Cold (&lt;22°C) stalls growth; Extreme Heat (&gt;40°C) kills bacteria.</span>
+              </div>
+
+              <div class="game-stats">
+                <div class="stat-pill">
+                  <span class="stat-lbl">Fermentation</span>
+                  <span class="stat-val" id="fermentPercent">35%</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-lbl">Bacterial Flora</span>
+                  <span class="stat-val" id="floraStatus">Lactobacillus Active</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-lbl">Batter Status</span>
+                  <span class="stat-val" id="batterStatus">Rising...</span>
+                </div>
+              </div>
+
+              <div class="game-btn-row">
+                <button type="button" class="btn-secondary" id="advanceFermentBtn">+ Advance 4 Hours</button>
+                <button type="button" class="btn-secondary" id="resetFermentBtn">Reset Batter</button>
+              </div>
+
+              <div class="ferment-celebration hidden" id="fermentCelebration">
+                <div class="celeb-badge">✨ Fermentation Complete!</div>
+                <p>Batter volume has doubled with dense microscopic gas pores. Ready for precision computer vision analysis!</p>
+                <button type="button" class="btn-primary" id="transitionToAnalyzerBtn">Proceed to The Analyzer &rarr;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature E: Closing Narrative Beat -->
+        <div class="lore-card cta-card">
+          <div class="cta-inner">
+            <span class="module-tag">Feature E &bull; The Question of Perfection</span>
+            <h3>What makes an idli truly great?</h3>
+            <p>
+              Is it merely fluffiness? Or is it the calibrated 8.0 cm diameter, concentric symmetry, and micro-pore aeration that separates casual breakfast from pure culinary engineering?
+            </p>
+            <button type="button" class="btn-primary" id="ctaStartAnalysis">
+              <span>Step Up to the Analyzer</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================== -->
+      <!-- TAB 2: THE ANALYZER (Phases 2–7 Image Upload & CV Processing)         -->
+      <!-- ==================================================================== -->
       <section class="tab-pane active" id="tab-analyzer">
         <div class="section-intro">
-          <div class="intro-pill">Precision Geometry Pipeline</div>
-          <h2>Upload Your Idli for Metric Extraction</h2>
+          <div class="intro-pill">Precision Computer Vision Pipeline</div>
+          <h2>Upload Your Idli for Deterministic Analysis</h2>
           <p class="intro-desc">
             Unlike superficial AI guesswork, Idli Vision uses OpenCV contour tracing, symmetry axis computation, and mathematical pore analysis. 
-            To calculate 3D metrics, <strong>both top-view and side-view photographs</strong> are mandatory.
+            To calculate 3D metrics, <strong>both top-view and side-view photographs</strong> are required.
           </p>
         </div>
 
@@ -87,13 +321,21 @@
         <div class="info-callout">
           <div class="callout-icon">ℹ️</div>
           <div class="callout-body">
-            <strong>Why are two perspectives required?</strong>
+            <strong>Why are two perspectives mandatory?</strong>
             <p>
               A single top-down image cannot measure vertical rise or crumb density. 
               The <em>Top View</em> extracts diameter, roundness, axis symmetry, deformity, and fermentation hole distribution. 
-              The <em>Side View</em> measures profile thickness and leavening lift.
+              The <em>Side View</em> measures profile thickness and leavening lift against the 2.3 cm standard.
             </p>
           </div>
+        </div>
+
+        <!-- Sample Test Presets (Section 16 Quick Testing) -->
+        <div class="preset-strip">
+          <span class="preset-label">Quick Test Presets:</span>
+          <button type="button" class="btn-chip" id="presetPerfect">🌟 Sample A (High Rise Master)</button>
+          <button type="button" class="btn-chip" id="presetFlat">🪙 Sample B (Flat / Low Rise)</button>
+          <button type="button" class="btn-chip" id="presetUneven">📐 Sample C (Asymmetric Slump)</button>
         </div>
 
         <!-- Dual Upload Form -->
@@ -103,7 +345,7 @@
             <div class="card-header">
               <div class="card-badge">Required Perspective 1</div>
               <h3>Top-Down View</h3>
-              <p class="card-hint">Place flat on reference mat or high-contrast background</p>
+              <p class="card-hint">Place flat on high-contrast surface or IdliQ reference mat</p>
             </div>
 
             <div class="dropzone" id="topDropzone" role="button" tabindex="0" aria-label="Upload Top View Image">
@@ -140,7 +382,7 @@
             <div class="card-header">
               <div class="card-badge">Required Perspective 2</div>
               <h3>Side Profile View</h3>
-              <p class="card-hint">Shoot parallel to surface at eye level</p>
+              <p class="card-hint">Shoot parallel to surface at plate eye level</p>
             </div>
 
             <div class="dropzone" id="sideDropzone" role="button" tabindex="0" aria-label="Upload Side Profile View Image">
@@ -167,12 +409,12 @@
             <div class="card-metrics-preview">
               <span class="metric-tag">&bull; Thickness (2.3 cm target)</span>
               <span class="metric-tag">&bull; Leavening Convexity</span>
-              <span class="metric-tag">&bull; Steam Plate Uniformity</span>
+              <span class="metric-tag">&bull; Plate Level Baseline</span>
             </div>
           </div>
         </form>
 
-        <!-- Action Bar -->
+        <!-- Action Dock & Progress Bar -->
         <div class="action-dock">
           <div class="selection-status" id="selectionStatus">
             <span class="status-pill warn" id="uploadStatusPill">Awaiting Photos</span>
@@ -186,6 +428,15 @@
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </button>
+        </div>
+
+        <!-- Processing Progress Overlay -->
+        <div class="analysis-progress-card hidden" id="analysisProgressCard">
+          <div class="progress-spinner"></div>
+          <div class="progress-details">
+            <h4 id="progressTitle">Running Computer Vision Pipeline...</h4>
+            <p id="progressTicker">Extracting outer contour and calibrating pixels...</p>
+          </div>
         </div>
 
         <!-- Calibration Reference Mat Banner (Section 7.1) -->
@@ -202,7 +453,7 @@
             </div>
             <div class="mat-stat">
               <span class="stat-num">0.85+</span>
-              <span class="stat-lbl">Concentric Circularity Threshold</span>
+              <span class="stat-lbl">Circularity Threshold</span>
             </div>
             <div class="mat-stat">
               <span class="stat-num">OpenCV</span>
@@ -212,99 +463,368 @@
         </div>
       </section>
 
-      <!-- TAB 2: ORIGIN & SCIENCE (Skeleton for Phase 11) -->
-      <section class="tab-pane" id="tab-story">
-        <div class="section-intro">
-          <div class="intro-pill">Cultural History & Food Science</div>
-          <h2>The Idli Origin Story & Fermentation Science</h2>
-          <p class="intro-desc">
-            From 920 CE Vaddaradhane chronicles to modern molecular gastronomy, discover the physics behind South India's steam-leavened marvel.
-          </p>
-        </div>
-
-        <div class="story-preview-card">
-          <div class="story-feature-grid">
-            <div class="feature-item">
-              <div class="feature-badge">Module A</div>
-              <h4>Choose-Your-Path Exploration</h4>
-              <p>Branch into ancient origins, Tamil Sangam era culinary shifts, and fermentation physics.</p>
-            </div>
-            <div class="feature-item">
-              <div class="feature-badge">Module B</div>
-              <h4>Interactive Evolution Timeline</h4>
-              <p>Journey from the ancient <em>Iddalige</em> through traditional steaming to modern CV inspection.</p>
-            </div>
-            <div class="feature-item">
-              <div class="feature-badge">Module C</div>
-              <h4>Ingredient Deep-Dive</h4>
-              <p>Hear directly from Urad Dal, Parboiled Rice, and Fenugreek on their leavening duties.</p>
-            </div>
-            <div class="feature-item">
-              <div class="feature-badge">Module D</div>
-              <h4>Fermentation Mini-Game</h4>
-              <p>Control temperature and time to simulate CO₂ bubble expansion before steaming.</p>
-            </div>
-          </div>
-          <div class="module-status-notice">
-            <span>⚡ Phase 1 Foundation Active &bull; Interactive lore modules unlock in Phase 11</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAB 3: QUALITY REPORT (Preview Shell for Phase 8) -->
+      <!-- ==================================================================== -->
+      <!-- TAB 3: QUALITY REPORT (Phase 8 Visual Scorecard & Overlays)           -->
+      <!-- ==================================================================== -->
       <section class="tab-pane" id="tab-report">
         <div class="section-intro">
-          <div class="intro-pill">Geometric & Structural Audit</div>
-          <h2>Quality Scorecard & Visual Overlays</h2>
+          <div class="intro-pill">Section 8.1 Physical Quality Report</div>
+          <h2>Computer Vision Scorecard & Detection Overlays</h2>
           <p class="intro-desc">
-            Inspection overlays highlighting contour detection, diameter calipers, symmetry axis, and detected porosity.
+            Inspect your idli's physical geometry derived deterministically from OpenCV contour segmentation and thickness calibration.
           </p>
         </div>
 
-        <div class="report-empty-state">
-          <div class="empty-icon">📊</div>
-          <h3>No Analysis Conducted Yet</h3>
-          <p>Upload your idli photos in the Analyzer tab to generate your complete computer vision scorecard.</p>
-          <button class="btn-secondary" id="returnToAnalyzerBtn">Go to Analyzer</button>
+        <!-- Results Loaded Container -->
+        <div class="report-content" id="reportContent">
+          <!-- Overall Score Hero Banner -->
+          <div class="score-hero-card">
+            <div class="score-ring-wrapper">
+              <svg class="score-ring" viewBox="0 0 120 120">
+                <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
+                <circle class="ring-fill" id="scoreRingFill" cx="60" cy="60" r="50" style="stroke-dashoffset: 60;"></circle>
+              </svg>
+              <div class="score-number-display">
+                <span class="score-big" id="overallScoreVal">90</span>
+                <span class="score-denom">/ 100</span>
+              </div>
+            </div>
+
+            <div class="score-meta-details">
+              <div class="category-badge" id="categoryBadge">Idli Master</div>
+              <h3 id="scoreTitle">Exceptional Structural Integrity</h3>
+              <p id="scoreSummary">
+                Your idli demonstrates precise circular mold fill and textbook vertical leavening. Minimal edge distortion and well-dispersed surface steam vents.
+              </p>
+              <div class="report-actions-row">
+                <button type="button" class="btn-primary" id="consultCoachBtn">Consult The Idli Coach &rarr;</button>
+                <button type="button" class="btn-secondary" id="compareModeBtn">Compare With Another Idli</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 7.5 Visual Detection Overlays Viewer -->
+          <div class="visual-inspection-card">
+            <div class="card-header-flex">
+              <div>
+                <span class="card-badge">Section 7.5 Visual Detection Overlay</span>
+                <h3>Computer Vision Detection Overlays</h3>
+                <p class="card-hint">Toggle between the original capture and the OpenCV annotated telemetry:</p>
+              </div>
+
+              <div class="view-toggle-group">
+                <button type="button" class="toggle-btn active" id="btnShowOverlay">CV Annotated Telemetry</button>
+                <button type="button" class="toggle-btn" id="btnShowOriginal">Original Capture</button>
+              </div>
+            </div>
+
+            <div class="overlay-dual-grid">
+              <!-- Top View Overlay -->
+              <div class="overlay-panel">
+                <div class="overlay-panel-header">
+                  <span class="panel-badge">Top Perspective</span>
+                  <span class="panel-notes">Contour &bull; Caliper &bull; Symmetry &bull; Pores</span>
+                </div>
+                <div class="image-stage">
+                  <img id="overlayTopImg" class="stage-img" alt="Top view overlay">
+                  <img id="origTopImg" class="stage-img hidden" alt="Top view original">
+                </div>
+                <div class="overlay-legend">
+                  <span class="leg-item"><span class="leg-dot emerald"></span>Contour Boundary</span>
+                  <span class="leg-item"><span class="leg-dot amber"></span>Diameter Caliper</span>
+                  <span class="leg-item"><span class="leg-dot rose"></span>Symmetry Axis</span>
+                  <span class="leg-item"><span class="leg-dot cyan"></span>Aeration Pores</span>
+                </div>
+              </div>
+
+              <!-- Side View Overlay -->
+              <div class="overlay-panel">
+                <div class="overlay-panel-header">
+                  <span class="panel-badge">Side Perspective</span>
+                  <span class="panel-notes">Thickness &bull; Base Level &bull; Apex Dome</span>
+                </div>
+                <div class="image-stage">
+                  <img id="overlaySideImg" class="stage-img" alt="Side view overlay">
+                  <img id="origSideImg" class="stage-img hidden" alt="Side view original">
+                </div>
+                <div class="overlay-legend">
+                  <span class="leg-item"><span class="leg-dot slate"></span>Plate Baseline</span>
+                  <span class="leg-item"><span class="leg-dot amber"></span>Thickness Caliper</span>
+                  <span class="leg-item"><span class="leg-dot rose"></span>Dome Apex</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Radar Chart & Metrics Grid -->
+          <div class="analytics-row">
+            <!-- Radar Chart -->
+            <div class="chart-card">
+              <div class="card-header">
+                <span class="card-badge">Multivariate Geometric Radar</span>
+                <h3>Target Standard Deviation</h3>
+                <p class="card-hint">Comparing measured dimensions against the ideal standard</p>
+              </div>
+              <div class="chart-container">
+                <canvas id="idliRadarChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Detailed Metrics Cards -->
+            <div class="metrics-column">
+              <!-- Diameter -->
+              <div class="metric-row-card">
+                <div class="m-info">
+                  <span class="m-title">Diameter</span>
+                  <span class="m-val" id="metricDiaVal">7.85 cm</span>
+                  <span class="m-target">Target: 8.0 cm</span>
+                </div>
+                <div class="m-bar-wrap">
+                  <div class="m-bar-fill" id="barDia" style="width: 98%;"></div>
+                </div>
+                <span class="m-score" id="scoreDia">98/100</span>
+              </div>
+
+              <!-- Thickness -->
+              <div class="metric-row-card">
+                <div class="m-info">
+                  <span class="m-title">Thickness</span>
+                  <span class="m-val" id="metricThickVal">2.25 cm</span>
+                  <span class="m-target">Target: 2.3 cm</span>
+                </div>
+                <div class="m-bar-wrap">
+                  <div class="m-bar-fill" id="barThick" style="width: 98%;"></div>
+                </div>
+                <span class="m-score" id="scoreThick">98/100</span>
+              </div>
+
+              <!-- Roundness -->
+              <div class="metric-row-card">
+                <div class="m-info">
+                  <span class="m-title">Roundness</span>
+                  <span class="m-val" id="metricRoundVal">0.88</span>
+                  <span class="m-target">Target: 0.85+</span>
+                </div>
+                <div class="m-bar-wrap">
+                  <div class="m-bar-fill" id="barRound" style="width: 88%;"></div>
+                </div>
+                <span class="m-score" id="scoreRound">88/100</span>
+              </div>
+
+              <!-- Symmetry -->
+              <div class="metric-row-card">
+                <div class="m-info">
+                  <span class="m-title">Symmetry</span>
+                  <span class="m-val" id="metricSymmVal">0.82</span>
+                  <span class="m-target">Target: 0.80+</span>
+                </div>
+                <div class="m-bar-wrap">
+                  <div class="m-bar-fill" id="barSymm" style="width: 82%;"></div>
+                </div>
+                <span class="m-score" id="scoreSymm">82/100</span>
+              </div>
+
+              <!-- Deformity -->
+              <div class="metric-row-card">
+                <div class="m-info">
+                  <span class="m-title">Edge Integrity</span>
+                  <span class="m-val" id="metricDefVal">88%</span>
+                  <span class="m-target">Target: 80%+</span>
+                </div>
+                <div class="m-bar-wrap">
+                  <div class="m-bar-fill" id="barDef" style="width: 88%;"></div>
+                </div>
+                <span class="m-score" id="scoreDef">88/100</span>
+              </div>
+
+              <!-- Aeration Pores -->
+              <div class="metric-row-card">
+                <div class="m-info">
+                  <span class="m-title">Pores & Aeration</span>
+                  <span class="m-val" id="metricPoresVal">14 Pores</span>
+                  <span class="m-target">Uniformity: 74/100</span>
+                </div>
+                <div class="m-bar-wrap">
+                  <div class="m-bar-fill" id="barPores" style="width: 74%;"></div>
+                </div>
+                <span class="m-score" id="scorePores">74/100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detected Issues Breakdown (Section 8.1) -->
+          <div class="issues-card">
+            <div class="card-header">
+              <span class="card-badge">Section 8.1 Diagnostic</span>
+              <h3>Measurement-Derived Physical Observations</h3>
+              <p class="card-hint">Grounded in actual OpenCV contour geometry rather than generic speculation:</p>
+            </div>
+            <div class="issues-list" id="issuesList">
+              <div class="issue-item good">
+                <span class="issue-icon">✅</span>
+                <div class="issue-body">
+                  <strong>Concentric Mold Conformance</strong>
+                  <p>Diameter and roundness both exceed 85% target threshold without noticeable mold drag.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- TAB 4: IDLI COACH (Preview Shell for Phase 10) -->
+      <!-- ==================================================================== -->
+      <!-- TAB 4: IDLI COACH (Phases 9 & 10 Gemini AI Coaching Layer)            -->
+      <!-- ==================================================================== -->
       <section class="tab-pane" id="tab-coach">
         <div class="section-intro">
-          <div class="intro-pill">Gemini-Powered AI Consultant</div>
+          <div class="intro-pill">Section 8.3 &bull; AI Conversational Layer</div>
           <h2>The Idli Coach</h2>
           <p class="intro-desc">
-            A witty, measurement-grounded culinary coach. No generic tips: feedback is strictly derived from your CV metrics.
+            A witty, measurement-grounded culinary coach. No generic tips: feedback is strictly derived from your actual computer vision numbers.
           </p>
         </div>
 
-        <div class="coach-empty-state">
-          <div class="coach-avatar">👨‍🍳</div>
-          <h3>"I can't coach an idli I haven't measured!"</h3>
-          <p>Complete your image analysis first. The Coach will read your exact diameter, symmetry, and pore distribution to formulate your customized recipe improvement plan.</p>
-          <div class="coach-pill-preview">
-            <span>Playful Roast</span>
-            <span>&rarr;</span>
-            <span>Technical Science</span>
-            <span>&rarr;</span>
-            <span>Actionable Recipe Fixes</span>
+        <div class="coach-container">
+          <!-- Coach Profile Bar -->
+          <div class="coach-profile-card">
+            <div class="coach-avatar-badge">👨‍🍳</div>
+            <div class="coach-info">
+              <h3>Head Coach Subramanian</h3>
+              <p>Senior Fellow of Batter Rheology & South Indian Steaming Physics</p>
+              <div class="coach-mode-pill" id="coachEngineMode">Engine: Deterministic Expert Mode</div>
+            </div>
+          </div>
+
+          <!-- Quick Question Buttons (Section 8.3) -->
+          <div class="question-pill-tray">
+            <span class="tray-label">Quick Score Questions:</span>
+            <button type="button" class="q-btn" data-q="Why is my roundness low?">📐 Why is my roundness low?</button>
+            <button type="button" class="q-btn" data-q="Why are my holes uneven?">🫧 Why are my holes uneven?</button>
+            <button type="button" class="q-btn" data-q="Why is my thickness low?">📏 Why is my thickness low?</button>
+            <button type="button" class="q-btn highlight" id="btnMakeBetter">⚡ Make My Idli Better (Top 3 Fixes)</button>
+          </div>
+
+          <!-- Structured Coach Response Card -->
+          <div class="coach-feedback-card" id="coachFeedbackCard">
+            <!-- 1. Playful Roast -->
+            <div class="feedback-block roast-block">
+              <div class="block-header">
+                <span class="block-num">01</span>
+                <span class="block-title">The Culinary Critique</span>
+              </div>
+              <p class="roast-quote" id="coachRoast">
+                "A solid attempt! But the kitchen gods demand slightly crisper edges."
+              </p>
+            </div>
+
+            <!-- 2. Technical Food Science Explanation -->
+            <div class="feedback-block science-block">
+              <div class="block-header">
+                <span class="block-num">02</span>
+                <span class="block-title">Food Science & Rheology Breakdown</span>
+              </div>
+              <p class="science-text" id="coachExplanation">
+                Your idli scored 90/100. Diameter (7.85 cm) and thickness (2.25 cm) fall comfortably inside the reference envelope.
+              </p>
+            </div>
+
+            <!-- 3. Actionable Kitchen Advice -->
+            <div class="feedback-block advice-block">
+              <div class="block-header">
+                <span class="block-num">03</span>
+                <span class="block-title">Three Prioritized Kitchen Directives</span>
+              </div>
+              <ul class="advice-list" id="coachAdviceList">
+                <li>Ensure urad dal to rice ratio is precisely 1:4 by volume.</li>
+                <li>Ferment for a minimum of 8 hours at 28-32°C for optimal leavening pores.</li>
+                <li>Grease the idli mold lightly with gingelly oil to prevent edge distortion.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Personalized Improvement Plan Card (Section 8.3) -->
+          <div class="improvement-plan-card">
+            <div class="plan-header">
+              <div class="plan-badge">Actionable Target Plan</div>
+              <h3>Personalized Trajectory</h3>
+            </div>
+            <div class="trajectory-row">
+              <div class="traj-stat">
+                <span class="traj-lbl">Current CV Score</span>
+                <span class="traj-val curr" id="trajCurrentScore">90</span>
+              </div>
+              <div class="traj-arrow">&rarr;</div>
+              <div class="traj-stat">
+                <span class="traj-lbl">Next Target Score</span>
+                <span class="traj-val target" id="trajTargetScore">98</span>
+              </div>
+            </div>
+            <div class="plan-cta">
+              <button type="button" class="btn-primary" id="btnAnalyzeAnother">Analyze Another Idli</button>
+            </div>
           </div>
         </div>
       </section>
 
     </main>
 
+    <!-- Comparison Mode Modal (Section 8.2) -->
+    <div class="modal-backdrop hidden" id="comparisonModal">
+      <div class="comparison-modal-card">
+        <div class="modal-header">
+          <h3>Section 8.2 Comparison Mode</h3>
+          <button type="button" class="close-btn" id="closeComparisonBtn">&times;</button>
+        </div>
+        <p class="modal-sub">Compare your currently evaluated Idli against a benchmark competitor:</p>
+
+        <div class="comparison-grid">
+          <div class="comp-col" id="compColA">
+            <span class="col-tag">Your Current Idli</span>
+            <h4 id="compNameA">Attempt #1</h4>
+            <div class="comp-score" id="compScoreA">90</div>
+            <ul class="comp-stats">
+              <li>Diameter: <strong id="compDiaA">7.85 cm</strong></li>
+              <li>Thickness: <strong id="compThickA">2.25 cm</strong></li>
+              <li>Circularity: <strong id="compRoundA">88%</strong></li>
+              <li>Pores: <strong id="compPoresA">14</strong></li>
+            </ul>
+          </div>
+
+          <div class="comp-vs">VS</div>
+
+          <div class="comp-col" id="compColB">
+            <span class="col-tag">Benchmark Target</span>
+            <h4>IdliQ Ideal Reference</h4>
+            <div class="comp-score">100</div>
+            <ul class="comp-stats">
+              <li>Diameter: <strong>8.00 cm</strong></li>
+              <li>Thickness: <strong>2.30 cm</strong></li>
+              <li>Circularity: <strong>96%</strong></li>
+              <li>Pores: <strong>18</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="winner-declaration" id="winnerDeclaration">
+          <span class="trophy">🏆</span>
+          <div class="winner-text">
+            <strong>Comparative Verdict:</strong>
+            <p id="verdictText">Your Idli is within 10% of ideal benchmark specifications! Notable strength in thickness profile.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- App Footer -->
     <footer class="main-footer">
       <div class="footer-content">
         <div class="footer-left">
-          <span><strong>Idli Vision</strong> &bull; Phase 1 Foundation</span>
+          <span><strong>Idli Vision</strong> &bull; Full-Stack Computer Vision & AI Coach</span>
           <span class="sep">&bull;</span>
-          <span>Target Reference: 8.0cm &times; 2.3cm</span>
+          <span>Target Standard: 8.0cm &times; 2.3cm</span>
         </div>
         <div class="footer-right">
-          <span>OpenCV CV Pipeline + Gemini AI Integration</span>
+          <span>Deterministic OpenCV Pipeline + Gemini AI Integration</span>
         </div>
       </div>
     </footer>

@@ -9,6 +9,7 @@ const cors = require('cors');
 const path = require('path');
 
 const analyzeRouter = require('./routes/analyze');
+const coachRouter = require('./routes/coach');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +28,7 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     app: 'Idli Vision API',
-    phase: 1,
+    phase: 'All Phases Active (2-11)',
     environment: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString()
   });
@@ -35,6 +36,7 @@ app.get('/api/health', (req, res) => {
 
 // API Routes
 app.use('/api/analyze', analyzeRouter);
+app.use('/api/coach', coachRouter);
 
 // 404 Handler for undefined API routes
 app.use('/api/*', (req, res) => {

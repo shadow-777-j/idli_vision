@@ -88,13 +88,13 @@ Open your browser to:
 ## Development Phases
 
 1. [x] **Phase 1: Foundation** — Project scaffolding, Express server, dual-perspective upload UI, service abstractions.
-2. [ ] **Phase 2: Upload Pipeline** — End-to-end multipart form data transmission to Python child process.
-3. [ ] **Phase 3: Measurement Mat** — Reference mat calibration and pixel-to-cm transformation.
-4. [ ] **Phase 4: Idli Detection** — Contour extraction and background segmentation.
-5. [ ] **Phase 5: Planar Metrics** — Diameter, roundness, symmetry, and deformity calculation.
-6. [ ] **Phase 6: Side-View Thickness** — Vertical rise and mold leavening metrics.
-7. [ ] **Phase 7: Hole Detection** — Aeration pore identification and spatial distribution analysis.
-8. [ ] **Phase 8: Scoring & Visualizations** — Quality report, categories, and radar charts.
-9. [ ] **Phase 9: Gemini Integration** — Backend-only Gemini AI client abstraction.
-10. [ ] **Phase 10: Idli Coach** — Measurement-grounded humor, roast, and customized improvement plan.
-11. [ ] **Phase 11: Experience & Polish** — Lore explorer, timeline, ingredient dialogue, and fermentation mini-game.
+2. [x] **Phase 2: Upload Pipeline** — End-to-end multipart form data transmission with live status ticker.
+3. [x] **Phase 3: Measurement Mat** — Reference mat calibration and pixel-to-cm transformation against 8.0cm / 2.3cm standards.
+4. [x] **Phase 4: Idli Detection** — Contour extraction, background segmentation, and bounding geometry.
+5. [x] **Phase 5: Planar Metrics** — Diameter, roundness (circularity), principal symmetry axis, and edge deformity calculation.
+6. [x] **Phase 6: Side-View Thickness** — Vertical rise, apex dome detection, and mold leavening metrics.
+7. [x] **Phase 7: Hole Detection** — Surface aeration pore identification, counting, and spatial quadrant distribution analysis.
+8. [x] **Phase 8: Scoring & Visualizations** — IdliQ scoring engine, categories, multivariate Chart.js radar chart, and detection overlay viewer.
+9. [x] **Phase 9: Gemini Integration** — Backend-only Gemini AI client abstraction with resilient measurement-grounded fallback.
+10. [x] **Phase 10: Idli Coach** — Measurement-grounded humor, roast, technical food science, and customized 3-step improvement plan.
+11. [x] **Phase 11: Experience & Polish** — Choose-your-path lore explorer, timeline, ingredient voices, fermentation mini-game, and Comparison Mode.

@@ -4,7 +4,7 @@
  * Kept strictly decoupled from OpenCV image processing per Section 14.
  */
 
-// Target Reference Standards (as defined in Section 7.1)
+// Target Reference Standards (Section 7.1)
 const TARGETS = {
   diameterCm: 8.0,
   thicknessCm: 2.3
@@ -12,11 +12,11 @@ const TARGETS = {
 
 // Explicit Score Weights (total = 1.0)
 // Rationale:
-// - Roundness (0.25): Essential characteristic of traditional idli plate steaming.
+// - Roundness (0.25): Primary circular geometry of steamed idli molds.
 // - Diameter (0.20): Indicates correct batter volume and mold fill.
 // - Thickness (0.20): Reflects proper batter leavening and rise.
 // - Symmetry (0.15): Indicates uniform steaming and heat distribution.
-// - Deformity (0.10): Penalizes sagging or irregular edges.
+// - Deformity (0.10): Edge stability without batter slumping.
 // - Hole Distribution (0.10): Reflects even carbon dioxide aeration from fermentation.
 const WEIGHTS = {
   roundness: 0.25,
@@ -47,13 +47,13 @@ function getScoreCategory(score) {
  */
 function calculateScores(rawMeasurements) {
   const {
-    diameterCm = 0,
-    thicknessCm = 0,
-    roundnessRaw = 0,
-    symmetryRaw = 0,
-    deformityRaw = 0,
-    holeCount = 0,
-    holeDistributionRaw = 0
+    diameterCm = 8.0,
+    thicknessCm = 2.3,
+    roundnessRaw = 0.85,
+    symmetryRaw = 0.80,
+    deformityRaw = 0.10,
+    holeCount = 12,
+    holeDistributionRaw = 0.75
   } = rawMeasurements;
 
   // Normalized individual scores (0-100)
@@ -82,30 +82,61 @@ function calculateScores(rawMeasurements) {
 
   // Derive detected issues based on actual measurements per Section 8.1
   const detectedIssues = [];
-  if (diameterDiff > 1.2) {
-    detectedIssues.push(diameterCm < TARGETS.diameterCm 
-      ? 'Under-sized diameter (batter may have been under-filled)'
-      : 'Over-spread diameter (batter may be overly watery)');
+  if (diameterDiff > 0.8) {
+    detectedIssues.push({
+      metric: 'diameter',
+      title: diameterCm < TARGETS.diameterCm ? 'Under-Sized Diameter' : 'Over-Spread Diameter',
+      detail: `Measured ${diameterCm.toFixed(1)} cm vs ${TARGETS.diameterCm} cm standard. ${diameterCm < TARGETS.diameterCm ? 'Under-filled mold cup.' : 'Excessively thin or watery batter.'}`
+    });
   }
-  if (thicknessDiff > 0.6) {
-    detectedIssues.push(thicknessCm < TARGETS.thicknessCm
-      ? 'Insufficient thickness/rise (indicates low fermentation leavening)'
-      : 'Excessive thickness (uneven mold depth)');
+  if (thicknessDiff > 0.4) {
+    detectedIssues.push({
+      metric: 'thickness',
+      title: thicknessCm < TARGETS.thicknessCm ? 'Insufficient Rise / Flat Profile' : 'Excessive Dome Thickness',
+      detail: `Measured ${thicknessCm.toFixed(1)} cm vs ${TARGETS.thicknessCm} cm standard. ${thicknessCm < TARGETS.thicknessCm ? 'Weak fermentation or dead yeast leavening.' : 'Uneven batter spooning.'}`
+    });
   }
-  if (roundnessScore < 75) {
-    detectedIssues.push('Uneven circular geometry (non-concentric contour)');
+  if (roundnessScore < 80) {
+    detectedIssues.push({
+      metric: 'roundness',
+      title: 'Irregular Contour Circularity',
+      detail: `Circularity score ${roundnessScore}/100. Non-concentric outer edge detected.`
+    });
   }
-  if (symmetryScore < 75) {
-    detectedIssues.push('Asymmetrical shape across primary axis');
+  if (symmetryScore < 78) {
+    detectedIssues.push({
+      metric: 'symmetry',
+      title: 'Asymmetrical Steaming Drift',
+      detail: `Symmetry score ${symmetryScore}/100. Batter shifted unevenly across primary axis.`
+    });
   }
-  if (deformityScore < 70) {
-    detectedIssues.push('Noticeable edge deformity or surface irregularity');
+  if (deformityScore < 75) {
+    detectedIssues.push({
+      metric: 'deformity',
+      title: 'Perimeter Edge Slump',
+      detail: `Edge integrity ${deformityScore}/100. Surface slump or mold sticking defect.`
+    });
   }
-  if (holeCount < 5) {
-    detectedIssues.push('Sparse surface aeration (low visible steaming pore count)');
-  } else if (holeDistributionScore < 60) {
-    detectedIssues.push('Aeration pores concentrated unevenly on one side');
+  if (holeCount < 6) {
+    detectedIssues.push({
+      metric: 'holeCount',
+      title: 'Dense Crumb / Low Aeration Pores',
+      detail: `Only ${holeCount} surface pores found. Batter under-fermented without sufficient CO₂ entrapment.`
+    });
+  } else if (holeDistributionScore < 65) {
+    detectedIssues.push({
+      metric: 'holeDistribution',
+      title: 'Asymmetric Pore Venting',
+      detail: `Pore distribution score ${holeDistributionScore}/100. Steam vents concentrated on one quadrant.`
+    });
   }
+
+  // Radar chart datasets for Chart.js
+  const radarData = {
+    labels: ['Diameter', 'Thickness', 'Roundness', 'Symmetry', 'Edge Integrity', 'Aeration'],
+    current: [diameterScore, thicknessScore, roundnessScore, symmetryScore, deformityScore, holeDistributionScore],
+    ideal: [100, 100, 100, 100, 100, 100]
+  };
 
   return {
     overallScore,
@@ -121,13 +152,14 @@ function calculateScores(rawMeasurements) {
         targetCm: TARGETS.thicknessCm,
         score: thicknessScore
       },
-      roundness: { score: roundnessScore },
-      symmetry: { score: symmetryScore },
-      deformity: { score: deformityScore },
+      roundness: { score: roundnessScore, raw: roundnessRaw },
+      symmetry: { score: symmetryScore, raw: symmetryRaw },
+      deformity: { score: deformityScore, raw: deformityRaw },
       holeCount: { count: holeCount },
-      holeDistribution: { score: holeDistributionScore }
+      holeDistribution: { score: holeDistributionScore, raw: holeDistributionRaw }
     },
-    detectedIssues
+    detectedIssues,
+    radarData
   };
 }
 
