@@ -6,8 +6,11 @@
 
 const { spawn } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
-const PYTHON_PATH = process.env.PYTHON_PATH || 'python';
+const localVenvPython = path.join(__dirname, '../../venv/Scripts/python.exe');
+const defaultPython = fs.existsSync(localVenvPython) ? localVenvPython : 'python';
+const PYTHON_PATH = process.env.PYTHON_PATH || defaultPython;
 const ANALYZER_SCRIPT = path.join(__dirname, '../../vision/analyzer.py');
 
 /**
