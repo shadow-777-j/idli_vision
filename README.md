@@ -2,20 +2,19 @@
 
 
 
-# [Project Name] 🎯
+# Idli Vision
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: Simplex
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: Joel Antony - Toc H Institute of Science and Technology
+- Member 2: Kaliraj - Toc H Institute of Science and Technology
 
 ### Project Description
-[2-3 lines about what your project does]
+Idli Vision is a analyzer that checks the roundness, thickness, diameter, number of pores/deformity, symmetry and egde integrity of the idli that the user uploads. It then passes that information to idli coach who then gives tips on how to improve the idli
 
 ### The Problem (that doesn't exist)
 [What ridiculous problem are you solving?]
@@ -87,6 +86,11 @@ For Hardware:
 
 # Additional Demos
 [Add any extra demo materials/links]
+
+## Known Limitations
+- **Lighting & Pore Detection Variance**: Surface aeration pore identification relies on morphological depressions and local adaptive Gaussian thresholding. Under direct overhead flash or extreme front-lighting, surface micro-shadows are suppressed, which may result in fewer visible pore counts compared to oblique or natural side lighting.
+- **Crumb Texture Density**: On idlis made from very coarse un-milled batter (e.g. rava idli or rustic stone-ground batter), dense surface micro-grains may be detected in higher volume compared to silky, finely-fermented rice/urad batter idlis.
+- **Monocular 2D Approximation**: Thickness, symmetry, and diameter calibrations assume the camera is perpendicular to the reference mat plane without extreme optical fish-eye distortion.
 
 ## Team Contributions
 - [Name 1]: [Specific contributions]
