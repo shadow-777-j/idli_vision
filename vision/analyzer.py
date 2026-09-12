@@ -143,30 +143,65 @@ def analyze_with_opencv(top_path, side_path):
     deformity_raw = min(1.0, max(0.02, area_diff_ratio * 0.7))
 
     # -------------------------------------------------------------
-    # Hole Detection (Pores inside Idli boundary via CLAHE)
+    # Hole Detection (Pores inside Idli boundary via In-Contour Masking & CLAHE/Black-Hat)
     # -------------------------------------------------------------
-    mask = np.zeros(gray_top.shape, dtype=np.uint8)
-    cv2.drawContours(mask, [primary_contour], -1, 255, -1)
+    # 1. Derive true in-contour idli mask from primary_contour
+    m_in = np.zeros(gray_top.shape, dtype=np.uint8)
+    cv2.drawContours(m_in, [primary_contour], -1, 255, -1)
     
-    # Erode mask slightly to ignore edge drop-shadows
-    eroded_mask = cv2.erode(mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)))
+    mean_in = cv2.mean(gray_top, mask=m_in)[0]
+    mean_out = cv2.mean(gray_top, mask=cv2.bitwise_not(m_in))[0]
 
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    clahe_top = clahe.apply(gray_top)
-    
-    # Adaptive threshold to detect dark depressions / pores
-    pore_thresh = cv2.adaptiveThreshold(
-        clahe_top, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 15, 4
-    )
-    pore_thresh = cv2.bitwise_and(pore_thresh, pore_thresh, mask=eroded_mask)
+    # Idlis are steamed white rice/dal batter (higher intensity than dark background/mat/hand)
+    if mean_in >= mean_out:
+        idli_mask = m_in
+    else:
+        # primary_contour was the background mat/hand cavity; the idli is the central cutout
+        idli_mask = cv2.bitwise_not(m_in)
+        idli_mask[0:2, :] = 0
+        idli_mask[-2:, :] = 0
+        idli_mask[:, 0:2] = 0
+        idli_mask[:, -2:] = 0
+        num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(idli_mask)
+        if num_labels > 1:
+            largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
+            idli_mask = (labels == largest_label).astype(np.uint8) * 255
 
-    pore_contours, _ = cv2.findContours(pore_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # 2. Inward-safe buffer (erode by 15px) to exclude drop-shadows & mat border bleed
+    safe_mask = cv2.erode(idli_mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)))
+
+    # 3. Explicit skin/hand exclusion using multi-color space analysis
+    hsv_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2HSV)
+    ycrcb_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2YCrCb)
+    skin_mask = (ycrcb_top[:, :, 1] > 145) & (hsv_top[:, :, 1] > 55)
+    safe_mask[skin_mask] = 0
+
+    # 4. Tuned pore extraction: Morphological Black-Hat to detect darker depressions on steamed surface
+    k_bh = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+    blackhat = cv2.morphologyEx(gray_top, cv2.MORPH_BLACKHAT, k_bh)
+    blackhat = cv2.bitwise_and(blackhat, blackhat, mask=safe_mask)
+
+    vals = blackhat[safe_mask > 0]
+    if len(vals) > 0:
+        th_val = max(22.0, float(np.percentile(vals, 98.2)))
+    else:
+        th_val = 30.0
+
+    _, b_thresh = cv2.threshold(blackhat, int(th_val), 255, cv2.THRESH_BINARY)
+    pore_contours, _ = cv2.findContours(b_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
     valid_holes = []
     for pc in pore_contours:
         p_area = cv2.contourArea(pc)
-        if 4 < p_area < 250:  # Valid pore size range
-            (hx, hy), hr = cv2.minEnclosingCircle(pc)
-            valid_holes.append((int(hx), int(hy), int(hr)))
+        if 6 <= p_area <= 200:
+            perim = cv2.arcLength(pc, True)
+            circ = (4.0 * math.pi * p_area) / (perim * perim) if perim > 0 else 0
+            if circ >= 0.35:  # Filter out linear cracks, keep roughly circular steam pores
+                (hx, hy), hr = cv2.minEnclosingCircle(pc)
+                ix, iy = int(hx), int(hy)
+                # Confirm point is strictly inside safe_mask and not on skin/mat
+                if 0 <= iy < top_h and 0 <= ix < top_w and safe_mask[iy, ix] > 0 and not skin_mask[iy, ix]:
+                    valid_holes.append((ix, iy, int(hr)))
 
     hole_count = max(3, len(valid_holes))
     if len(valid_holes) == 0:
