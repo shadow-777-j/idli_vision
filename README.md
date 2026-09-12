@@ -233,8 +233,8 @@ This image shows the Idli coach who gives tips on how to improve our idli and an
 
 ### Project Demo
 # Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
+https://drive.google.com/file/d/15b99mbj6vS93kQ0thgPSuuD8ttkJP1gv/view?usp=drivesdk
+
 
 
 ## Team Contributions
