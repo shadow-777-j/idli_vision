@@ -88,9 +88,18 @@ For Hardware:
 [Add any extra demo materials/links]
 
 ## Known Limitations
-- **Lighting & Pore Detection Variance**: Surface aeration pore identification relies on morphological depressions and local adaptive Gaussian thresholding. Under direct overhead flash or extreme front-lighting, surface micro-shadows are suppressed, which may result in fewer visible pore counts compared to oblique or natural side lighting.
-- **Crumb Texture Density**: On idlis made from very coarse un-milled batter (e.g. rava idli or rustic stone-ground batter), dense surface micro-grains may be detected in higher volume compared to silky, finely-fermented rice/urad batter idlis.
-- **Monocular 2D Approximation**: Thickness, symmetry, and diameter calibrations assume the camera is perpendicular to the reference mat plane without extreme optical fish-eye distortion.
+- **Pore & Cavity Detection Sensitivity & Parameter Tuning**: Surface aeration pore identification combines Morphological Black-Hat depression filtering with local adaptive Gaussian thresholding, followed by non-maximum suppression (NMS) distance deduplication:
+  - **Tuned Parameter Baseline**:
+    - `k_bh`: `(15, 15)` elliptical structuring element for depression isolation.
+    - `min_contrast_floor`: `8` (prevents low-contrast flat crumb grain noise from triggering).
+    - `adaptive_c_val`: `-5` (ensures detected depressions meaningfully contrast with surrounding dome curvature).
+    - `area range`: `4` to `220` pixels (filters single-pixel noise and macroscopic tears).
+    - `circularity`: $\ge 0.22$ (admits natural micro-cavities while rejecting linear scratches).
+    - `NMS suppression distance`: $\min\_dist = 10\text{ px}$ (suppresses nested or overlapping concentric circle detections across scales).
+  - **Lighting & Micro-Shadow Dependence**: Detection relies on natural or oblique side lighting that creates micro-shadows within pores. Under direct overhead flash or extreme front-lighting, surface micro-shadows are washed out, resulting in fewer detected pores. Conversely, high-contrast directional raking light may accentuate shallower surface grain.
+  - **Batter Texture & Fermentation Variance**: Coarse or un-milled batter (e.g. rava idli, rustic stone-ground batter) exhibits higher surface grain density than smooth, highly-fermented rice/urad batter, affecting relative pore counts.
+- **Monocular 2D Calibration**: Diameter, thickness, roundness, and symmetry calibrations assume the camera is positioned reasonably perpendicular to the food plane without extreme optical fish-eye perspective distortion.
+
 
 ## Team Contributions
 - [Name 1]: [Specific contributions]
