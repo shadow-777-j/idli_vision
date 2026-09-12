@@ -46,8 +46,8 @@ For Software:
 For Software:
 # Installation
  # Clone the repository
-git clone https://github.com/<your-username>/idli-vision.git
-cd idli-vision
+git clone https://github.com/shadow-777-j/idli_vision.git
+cd idli_vision
 
 # Install Node.js dependencies
 npm install
@@ -76,7 +76,7 @@ node server.js
 # Navigate to frontend/index.html in your browser,
 # or if served via Express static files, visit:
 
-http://localhost:3000
+https://idli-vision.joelantony869.workers.dev/
 
 ### Project Documentation
 For Software:
@@ -233,9 +233,22 @@ This image shows the Idli coach who gives tips on how to improve our idli and an
 
 ### Project Demo
 # Video
-https://drive.google.com/file/d/15b99mbj6vS93kQ0thgPSuuD8ttkJP1gv/view?usp=drivesdk
+[Watch the Project Demo Video](https://drive.google.com/file/d/15b99mbj6vS93kQ0thgPSuuD8ttkJP1gv/view?usp=drivesdk)
 
+*This demo video showcases the full Idli Vision workflow: exploring the origin story paths, playing the interactive ingredient cooking mini-game, uploading dual-angle idli photos, deterministic OpenCV contour and pore telemetry analysis, dynamic radar chart scorecards, Gemini Idli Coach improvement advice, and Grok roast chat.*
 
+## Known Limitations
+- **Pore & Cavity Detection Sensitivity & Parameter Tuning**: Surface aeration pore identification combines Morphological Black-Hat depression filtering with local adaptive Gaussian thresholding, followed by non-maximum suppression (NMS) distance deduplication:
+  - **Tuned Parameter Baseline**:
+    - `k_bh`: `(15, 15)` elliptical structuring element for depression isolation.
+    - `min_contrast_floor`: `8` (prevents low-contrast flat crumb grain noise from triggering).
+    - `adaptive_c_val`: `-5` (ensures detected depressions meaningfully contrast with surrounding dome curvature).
+    - `area range`: `4` to `220` pixels (filters single-pixel noise and macroscopic tears).
+    - `circularity`: $\ge 0.22$ (admits natural micro-cavities while rejecting linear scratches).
+    - `NMS suppression distance`: $\min\_dist = 10\text{ px}$ (suppresses nested or overlapping concentric circle detections across scales).
+  - **Lighting & Micro-Shadow Dependence**: Detection relies on natural or oblique side lighting that creates micro-shadows within pores. Under direct overhead flash or extreme front-lighting, surface micro-shadows are washed out, resulting in fewer detected pores. Conversely, high-contrast directional raking light may accentuate shallower surface grain.
+  - **Batter Texture & Fermentation Variance**: Coarse or un-milled batter (e.g. rava idli, rustic stone-ground batter) exhibits higher surface grain density than smooth, highly-fermented rice/urad batter, affecting relative pore counts.
+- **Monocular 2D Calibration**: Diameter, thickness, roundness, and symmetry calibrations assume the camera is positioned reasonably perpendicular to the food plane without extreme optical fish-eye perspective distortion.
 
 ## Team Contributions
 - Joel Antony: Backend, Computer Vision & AI Integration
@@ -279,5 +292,3 @@ Made with ❤️ at TinkerHub Useless Projects
 
 ![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
 ![Static Badge](https://img.shields.io/badge/UselessProjects--26-26?link=https%3A%2F%2Ftinkerhub.org%2Fevents%2F1M8ORET9A1%2Fuseless-projects-3.0)
-
-

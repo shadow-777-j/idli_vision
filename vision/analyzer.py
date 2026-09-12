@@ -47,28 +47,26 @@ def encode_image_base64(image_bytes):
     b64 = base64.b64encode(image_bytes).decode('utf-8')
     return f"data:image/jpeg;base64,{b64}"
 
-def suppress_overlapping_pores(holes, min_dist=10):
+def suppress_overlapping_pores(pores, min_dist=10):
     """
-    Non-maximum suppression (NMS) / minimum-distance deduplication for pore detections.
-    Prevents nested/overlapping concentric circles from being counted multiple times.
+    Suppresses nested and overlapping duplicate pore detections using Non-Maximum Suppression (NMS).
+    Each pore is a tuple (hx, hy, hr).
     """
-    if not holes:
+    if not pores:
         return []
-    # Sort by radius descending (prefer larger distinct pores first)
-    sorted_holes = sorted(holes, key=lambda h: h[2], reverse=True)
-    kept = []
-    for h in sorted_holes:
-        hx, hy, hr = h
-        too_close = False
-        for (kx, ky, kr) in kept:
-            dist = math.hypot(hx - kx, hy - ky)
-            # Suppress if center distance is within pore radius or min_dist
-            if dist < max(min_dist, max(hr, kr)):
-                too_close = True
+    sorted_pores = sorted(pores, key=lambda p: p[2], reverse=True)
+    selected = []
+    for p in sorted_pores:
+        px, py, pr = p
+        overlap = False
+        for sx, sy, sr in selected:
+            dist = math.hypot(px - sx, py - sy)
+            if dist < max(min_dist, pr + sr * 0.5):
+                overlap = True
                 break
-        if not too_close:
-            kept.append(h)
-    return kept
+        if not overlap:
+            selected.append(p)
+    return selected
 
 def analyze_with_opencv(top_path, side_path):
     """
@@ -89,69 +87,78 @@ def analyze_with_opencv(top_path, side_path):
     gray_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2GRAY)
     blurred_top = cv2.GaussianBlur(gray_top, (9, 9), 2)
 
-    # Multi-color space skin mask (hand / finger exclusion across HSV and YCrCb)
+    # Multi-color space skin mask to decouple hands/fingers
     hsv_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2HSV)
     ycrcb_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2YCrCb)
-    skin_mask = (ycrcb_top[:, :, 1] > 145) & (hsv_top[:, :, 1] > 85)
+    skin_mask = (ycrcb_top[:, :, 1] > 145) & (hsv_top[:, :, 1] > 55)
 
-    # Robust Contour Extraction:
-    # 1. Search for circular idli candidate using Hough Circle Transform
-    min_radius_search = int(min(top_h, top_w) * 0.18)
-    max_radius_search = int(min(top_h, top_w) * 0.49)
-    circles = cv2.HoughCircles(
-        blurred_top, cv2.HOUGH_GRADIENT, dp=1.2, minDist=100,
-        param1=70, param2=35, minRadius=min_radius_search, maxRadius=max_radius_search
-    )
+    # Adaptive / Otsu Thresholding to isolate the light idli from background
+    _, thresh_top = cv2.threshold(blurred_top, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    
+    # Robust background polarity check: evaluate outer image perimeter vs inner center
+    border_mask = np.zeros((top_h, top_w), dtype=np.uint8)
+    border_mask[:15, :] = 255
+    border_mask[-15:, :] = 255
+    border_mask[:, :15] = 255
+    border_mask[:, -15:] = 255
+    center_mask = np.zeros((top_h, top_w), dtype=np.uint8)
+    cv2.circle(center_mask, (top_w // 2, top_h // 2), min(top_h, top_w) // 4, 255, -1)
+    if cv2.mean(thresh_top, mask=border_mask)[0] > 180 and cv2.mean(thresh_top, mask=center_mask)[0] < 80:
+        thresh_top = cv2.bitwise_not(thresh_top)
 
+    # Decouple skin regions from idli threshold before finding contours
+    thresh_no_skin = thresh_top.copy()
+    thresh_no_skin[skin_mask] = 0
+
+    # Morphological closing to seal internal pores, then opening to sever thin hand bridges
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
+    closed_top = cv2.morphologyEx(thresh_no_skin, cv2.MORPH_CLOSE, kernel)
+    opened_top = cv2.morphologyEx(closed_top, cv2.MORPH_OPEN, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9)))
+
+    contours, _ = cv2.findContours(opened_top, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Identify the primary idli contour based on circularity, expected size, center proximity, and brightness
     primary_contour = None
-    if circles is not None:
-        h_cx, h_cy, h_r = circles[0][0]
-        # Initialize GrabCut with radial spatial priors
-        gc_mask = np.zeros((top_h, top_w), np.uint8)
-        gc_mask[:] = cv2.GC_BGD
-        cv2.circle(gc_mask, (int(h_cx), int(h_cy)), int(h_r * 1.08), cv2.GC_PR_BGD, -1)
-        cv2.circle(gc_mask, (int(h_cx), int(h_cy)), int(h_r * 0.98), cv2.GC_PR_FGD, -1)
-        cv2.circle(gc_mask, (int(h_cx), int(h_cy)), int(h_r * 0.70), cv2.GC_FGD, -1)
+    if contours:
+        candidates = []
+        min_idli_area = (top_w * top_h) * 0.03
+        max_idli_area = (top_w * top_h) * 0.88
+        for cnt in contours:
+            cnt_area = cv2.contourArea(cnt)
+            if cnt_area < min_idli_area or cnt_area > max_idli_area:
+                continue
+            p = cv2.arcLength(cnt, True)
+            if p == 0:
+                continue
+            circ = (4.0 * math.pi * cnt_area) / (p * p)
+            m_cnt = cv2.moments(cnt)
+            if m_cnt["m00"] != 0:
+                c_cnt_x = m_cnt["m10"] / m_cnt["m00"]
+                c_cnt_y = m_cnt["m01"] / m_cnt["m00"]
+                dist_c = math.hypot(c_cnt_x - top_w / 2, c_cnt_y - top_h / 2) / (math.hypot(top_w / 2, top_h / 2) + 1e-5)
+            else:
+                dist_c = 1.0
+            m_temp = np.zeros((top_h, top_w), dtype=np.uint8)
+            cv2.drawContours(m_temp, [cnt], -1, 255, -1)
+            mean_br = cv2.mean(gray_top, mask=m_temp)[0]
+            # Preference towards circular, central, bright white batter contours
+            score = (circ ** 1.5) * math.sqrt(cnt_area) * (1.0 - 0.5 * dist_c) * (mean_br / 255.0)
+            candidates.append((score, cnt))
 
-        # Mark hand/skin pixels outside the inner core (95% radius) as definite background
-        inner_mask = np.zeros((top_h, top_w), dtype=np.uint8)
-        cv2.circle(inner_mask, (int(h_cx), int(h_cy)), int(h_r * 0.95), 255, -1)
-        gc_mask[skin_mask & (inner_mask == 0)] = cv2.GC_BGD
-
-        bgdModel = np.zeros((1, 65), np.float64)
-        fgdModel = np.zeros((1, 65), np.float64)
-        cv2.grabCut(top_img, gc_mask, None, bgdModel, fgdModel, 2, cv2.GC_INIT_WITH_MASK)
-        grab_mask = np.where((gc_mask == cv2.GC_FGD) | (gc_mask == cv2.GC_PR_FGD), 255, 0).astype('uint8')
-        kernel_gc = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
-        grab_clean = cv2.morphologyEx(grab_mask, cv2.MORPH_CLOSE, kernel_gc)
-        gc_contours, _ = cv2.findContours(grab_clean, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if gc_contours:
-            primary_contour = max(gc_contours, key=cv2.contourArea)
-
-    # Fallback to classical thresholding if Hough/GrabCut did not yield a valid contour
-    if primary_contour is None:
-        _, thresh_top = cv2.threshold(blurred_top, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-        cnt_test, _ = cv2.findContours(thresh_top, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if cnt_test:
-            cand = max(cnt_test, key=cv2.contourArea)
-            m_cand = np.zeros(gray_top.shape, dtype=np.uint8)
-            cv2.drawContours(m_cand, [cand], -1, 255, -1)
-            mean_in = cv2.mean(gray_top, mask=m_cand)[0]
-            mean_out = cv2.mean(gray_top, mask=cv2.bitwise_not(m_cand))[0]
-            if mean_in < mean_out:
-                thresh_top = cv2.bitwise_not(thresh_top)
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (11, 11))
-        closed_top = cv2.morphologyEx(thresh_top, cv2.MORPH_CLOSE, kernel)
-        contours, _ = cv2.findContours(closed_top, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if not contours:
-            c_x, c_y = top_w // 2, top_h // 2
-            radius = min(top_w, top_h) // 3
-            primary_contour = np.array([
-                [[int(c_x + radius * math.cos(a)), int(c_y + radius * math.sin(a))]]
-                for a in np.linspace(0, 2 * math.pi, 60, endpoint=False)
-            ], dtype=np.int32)
+        if candidates:
+            candidates.sort(key=lambda x: x[0], reverse=True)
+            primary_contour = candidates[0][1]
         else:
             primary_contour = max(contours, key=cv2.contourArea)
+
+    if primary_contour is None:
+        # Fallback to center-based synthetic contour if image was uniform
+        c_x, c_y = top_w // 2, top_h // 2
+        radius = min(top_w, top_h) // 3
+        primary_contour = np.array([
+            [[int(c_x + radius * math.cos(a)), int(c_y + radius * math.sin(a))]]
+            for a in np.linspace(0, 2 * math.pi, 60, endpoint=False)
+        ], dtype=np.int32)
 
     # Moments & Centroid
     M = cv2.moments(primary_contour)
@@ -206,7 +213,7 @@ def analyze_with_opencv(top_path, side_path):
     deformity_raw = min(1.0, max(0.02, area_diff_ratio * 0.7))
 
     # -------------------------------------------------------------
-    # Hole Detection (Pores inside Idli boundary via In-Contour Masking & Black-Hat)
+    # Hole Detection (Pores inside Idli boundary via In-Contour Masking & CLAHE/Black-Hat)
     # -------------------------------------------------------------
     # 1. Derive true in-contour idli mask from primary_contour
     m_in = np.zeros(gray_top.shape, dtype=np.uint8)
@@ -230,20 +237,21 @@ def analyze_with_opencv(top_path, side_path):
             largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
             idli_mask = (labels == largest_label).astype(np.uint8) * 255
 
-    # 2. Inward-safe buffer (erode by 7px) to exclude drop-shadows & border roll-off while preserving outer crumb
-    safe_mask = cv2.erode(idli_mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7)))
+    # 2. Inward-safe buffer (erode by 5px) to exclude drop-shadows & mat border bleed while preserving outer crumb
+    safe_mask = cv2.erode(idli_mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5)))
 
     # 3. Explicit skin/hand exclusion using multi-color space analysis
+    hsv_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2HSV)
+    ycrcb_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2YCrCb)
+    skin_mask = (ycrcb_top[:, :, 1] > 145) & (hsv_top[:, :, 1] > 55)
     safe_mask[skin_mask] = 0
 
     # 4. Tuned pore extraction: Morphological Black-Hat + Local Adaptive Thresholding
-    # Overcomes uneven lighting and edge roll-off shadows across the curved idli dome
+    # Baseline tuned parameters: floor=8, adaptive_c=-5, NMS deduplication min_dist=10
     k_bh = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
     raw_blackhat = cv2.morphologyEx(gray_top, cv2.MORPH_BLACKHAT, k_bh)
     
-    # Balanced sensitivity parameters:
-    # Floor: 8 eliminates flat background grain while keeping low-contrast crumb depressions
-    # Adaptive C: -5 ensures real pores stand out from surrounding dome gradient
+    # Local adaptive Gaussian thresholding on depressions:
     min_contrast_floor = 8
     adaptive_c_val = -5
     adapt_th = cv2.adaptiveThreshold(
@@ -260,48 +268,48 @@ def analyze_with_opencv(top_path, side_path):
     pore_contours, _ = cv2.findContours(cand_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     num_masked_blobs = len(pore_contours)
 
-    # 5. Sensitivity filtering: area and circularity
-    raw_valid_holes = []
+    # 5. Sensitivity filtering: area range [4, 220] and circularity >= 0.22
+    valid_holes = []
     for pc in pore_contours:
         p_area = cv2.contourArea(pc)
         if 4 <= p_area <= 220:
             perim = cv2.arcLength(pc, True)
             circ = (4.0 * math.pi * p_area) / (perim * perim) if perim > 0 else 0
-            if circ >= 0.22:  # Allow natural micro-cavities while filtering out scratches/noise
+            if circ >= 0.22:  # Allow natural micro-cavities while filtering out linear scratches
                 (hx, hy), hr = cv2.minEnclosingCircle(pc)
                 ix, iy = int(hx), int(hy)
                 # Confirm point is strictly inside safe_mask and not on skin/mat
                 if 0 <= iy < top_h and 0 <= ix < top_w and safe_mask[iy, ix] > 0 and not skin_mask[iy, ix]:
-                    raw_valid_holes.append((ix, iy, int(hr)))
+                    valid_holes.append((ix, iy, int(hr)))
 
-    num_pre_nms = len(raw_valid_holes)
-
-    # 6. Non-maximum suppression (NMS) deduplication to prevent nested/duplicate circle counts
-    valid_holes = suppress_overlapping_pores(raw_valid_holes, min_dist=10)
     num_valid_pores = len(valid_holes)
+
+    # 6. Non-Maximum Suppression (NMS) to eliminate duplicate/nested circles across scales
+    deduped_holes = suppress_overlapping_pores(valid_holes, min_dist=10)
+    num_deduped_pores = len(deduped_holes)
 
     # Non-blocking sanity check log to sys.stderr for CV development
     sys.stderr.write(
         f"[CV Debug] Pore candidates: raw_blobs={num_raw_blobs}, "
         f"inside_mask={num_masked_blobs}, "
-        f"pre_nms={num_pre_nms}, "
-        f"final_deduped={num_valid_pores}, "
+        f"sensitivity_filtered={num_valid_pores}, "
+        f"nms_deduped={num_deduped_pores}, "
         f"floor={min_contrast_floor}, C={adaptive_c_val}\n"
     )
     sys.stderr.flush()
 
-    if len(valid_holes) == 0:
+    if len(deduped_holes) == 0:
         # Fallback only if lighting completely washed out all surface texture
         for i in range(12):
             ang = (i / 12.0) * 2 * math.pi
             dist = (radius * 0.45) + ((i % 3) * 12)
-            valid_holes.append((int(cx + dist * math.cos(ang)), int(cy + dist * math.sin(ang)), 4))
+            deduped_holes.append((int(cx + dist * math.cos(ang)), int(cy + dist * math.sin(ang)), 4))
     
-    hole_count = len(valid_holes)
+    hole_count = len(deduped_holes)
 
     # Hole Distribution: Quadrant dispersion analysis
     quad_counts = [0, 0, 0, 0]
-    for (hx, hy, _) in valid_holes:
+    for (hx, hy, _) in deduped_holes:
         if hx >= cx and hy < cy: quad_counts[0] += 1
         elif hx < cx and hy < cy: quad_counts[1] += 1
         elif hx < cx and hy >= cy: quad_counts[2] += 1
@@ -344,7 +352,7 @@ def analyze_with_opencv(top_path, side_path):
     cv2.line(top_overlay, ax1, ax2, (244, 63, 94), 2, cv2.LINE_AA)
 
     # 6. Cyan Pores / Holes
-    for (hx, hy, hr) in valid_holes:
+    for (hx, hy, hr) in deduped_holes:
         cv2.circle(top_overlay, (hx, hy), max(3, hr + 1), (255, 220, 0), 1, cv2.LINE_AA)
         cv2.circle(top_overlay, (hx, hy), 2, (0, 255, 255), -1)
 
