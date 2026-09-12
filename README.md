@@ -1,100 +1,102 @@
-# Idli Vision 🥟
+<img width="1280" height="640" alt="git (1)" src="https://github.com/user-attachments/assets/8920b256-2ba8-4988-b824-5351134eb4bd" />
 
-> Computer Vision Quality Analysis & AI Coaching for South Indian Steamed Idlis.
 
-Idli Vision is a full-stack web application designed to evaluate the physical quality of steamed idlis using deterministic OpenCV computer vision analysis, an explainable scoring engine, and an AI coaching conversational layer powered by Google Gemini.
+
+# [Project Name] 🎯
+
+
+## Basic Details
+### Team Name: [Name]
+
+
+### Team Members
+- Team Lead: [Name] - [College]
+- Member 2: [Name] - [College]
+- Member 3: [Name] - [College]
+
+### Project Description
+[2-3 lines about what your project does]
+
+### The Problem (that doesn't exist)
+[What ridiculous problem are you solving?]
+
+### The Solution (that nobody asked for)
+[How are you solving it? Keep it fun!]
+
+## Technical Details
+### Technologies/Components Used
+For Software:
+- [Languages used]
+- [Frameworks used]
+- [Libraries used]
+- [Tools used]
+
+For Hardware:
+- [List main components]
+- [List specifications]
+- [List tools required]
+
+### Implementation
+For Software:
+# Installation
+[commands]
+
+# Run
+[commands]
+
+### Project Documentation
+For Software:
+
+# Screenshots (Add at least 3)
+![Screenshot1](Add screenshot 1 here with proper name)
+*Add caption explaining what this shows*
+
+![Screenshot2](Add screenshot 2 here with proper name)
+*Add caption explaining what this shows*
+
+![Screenshot3](Add screenshot 3 here with proper name)
+*Add caption explaining what this shows*
+
+# Diagrams
+![Workflow](Add your workflow/architecture diagram here)
+*Add caption explaining your workflow*
+
+For Hardware:
+
+# Schematic & Circuit
+![Circuit](Add your circuit diagram here)
+*Add caption explaining connections*
+
+![Schematic](Add your schematic diagram here)
+*Add caption explaining the schematic*
+
+# Build Photos
+![Components](Add photo of your components here)
+*List out all components shown*
+
+![Build](Add photos of build process here)
+*Explain the build steps*
+
+![Final](Add photo of final product here)
+*Explain the final build*
+
+### Project Demo
+# Video
+[Add your demo video link here]
+*Explain what the video demonstrates*
+
+# Additional Demos
+[Add any extra demo materials/links]
+
+## Team Contributions
+- [Name 1]: [Specific contributions]
+- [Name 2]: [Specific contributions]
+- [Name 3]: [Specific contributions]
 
 ---
+Made with ❤️ at TinkerHub Useless Projects 
 
-## System Architecture
+![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
+![Static Badge](https://img.shields.io/badge/UselessProjects--26-26?link=https%3A%2F%2Ftinkerhub.org%2Fevents%2F1M8ORET9A1%2Fuseless-projects-3.0)
 
-```
-Frontend (HTML5, Vanilla CSS, JavaScript)
-        │
-        ▼
-Backend (Node.js, Express, Multer)
-        │
-        ▼
-Computer Vision (Python, OpenCV, NumPy)
-        │
-        ▼
-Scoring Engine (scoringService.js)
-        │
-        ▼
-Gemini AI Layer (geminiService.js & Idli Coach)
-```
 
----
-
-## Phase 1 Status: Foundation
-
-Phase 1 establishes the core structural foundation:
-- Clean modular repository structure.
-- Node.js / Express backend server (`backend/server.js`) on port 3000.
-- Decoupled services architecture (`visionService.js`, `scoringService.js`, `geminiService.js`).
-- Dual-perspective upload user interface (`frontend/index.html`, `style.css`, `script.js`) explaining the necessity of both Top-View and Side-View photographs.
-- Python OpenCV entry point stub (`vision/analyzer.py`, `vision/requirements.txt`).
-- Standardized `.gitignore`, `.env.example`, and health monitoring endpoints.
-
----
-
-## System Requirements
-
-- **Node.js**: v18.0+ (Tested on v24.16.0)
-- **Python**: 3.10+ (Tested on Python 3.13.1)
-- **Git**: Installed and initialized
-
----
-
-## Installation & Setup
-
-### 1. Install Node Dependencies
-```bash
-npm install
-```
-
-### 2. Environment Configuration
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-
-Set your configuration variables:
-- `PORT=3000`
-- `PYTHON_PATH=python`
-- `GEMINI_API_KEY=` *(Needed for Phase 9/10)*
-
-### 3. Python Environment Setup
-Install the vision pipeline dependencies:
-```bash
-pip install -r vision/requirements.txt
-```
-
----
-
-## Running Locally
-
-To start the backend server:
-```bash
-npm start
-```
-
-Open your browser to:
-- **Application UI**: [http://localhost:3000](http://localhost:3000)
-- **API Health**: [http://localhost:3000/api/health](http://localhost:3000/api/health)
-
----
-
-## Development Phases
-
-1. [x] **Phase 1: Foundation** — Project scaffolding, Express server, dual-perspective upload UI, service abstractions.
-2. [x] **Phase 2: Upload Pipeline** — End-to-end multipart form data transmission with live status ticker.
-3. [x] **Phase 3: Measurement Mat** — Reference mat calibration and pixel-to-cm transformation against 8.0cm / 2.3cm standards.
-4. [x] **Phase 4: Idli Detection** — Contour extraction, background segmentation, and bounding geometry.
-5. [x] **Phase 5: Planar Metrics** — Diameter, roundness (circularity), principal symmetry axis, and edge deformity calculation.
-6. [x] **Phase 6: Side-View Thickness** — Vertical rise, apex dome detection, and mold leavening metrics.
-7. [x] **Phase 7: Hole Detection** — Surface aeration pore identification, counting, and spatial quadrant distribution analysis.
-8. [x] **Phase 8: Scoring & Visualizations** — IdliQ scoring engine, categories, multivariate Chart.js radar chart, and detection overlay viewer.
-9. [x] **Phase 9: Gemini Integration** — Backend-only Gemini AI client abstraction with resilient measurement-grounded fallback.
-10. [x] **Phase 10: Idli Coach** — Measurement-grounded humor, roast, technical food science, and customized 3-step improvement plan.
-11. [x] **Phase 11: Experience & Polish** — Choose-your-path lore explorer, timeline, ingredient voices, fermentation mini-game, and Comparison Mode.

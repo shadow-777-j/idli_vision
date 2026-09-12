@@ -167,8 +167,8 @@ def analyze_with_opencv(top_path, side_path):
             largest_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
             idli_mask = (labels == largest_label).astype(np.uint8) * 255
 
-    # 2. Inward-safe buffer (erode by 15px) to exclude drop-shadows & mat border bleed
-    safe_mask = cv2.erode(idli_mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15)))
+    # 2. Inward-safe buffer (erode by 7px) to exclude drop-shadows & mat border bleed while preserving outer crumb
+    safe_mask = cv2.erode(idli_mask, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (7, 7)))
 
     # 3. Explicit skin/hand exclusion using multi-color space analysis
     hsv_top = cv2.cvtColor(top_img, cv2.COLOR_BGR2HSV)
@@ -178,39 +178,59 @@ def analyze_with_opencv(top_path, side_path):
 
     # 4. Tuned pore extraction: Morphological Black-Hat to detect darker depressions on steamed surface
     k_bh = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
-    blackhat = cv2.morphologyEx(gray_top, cv2.MORPH_BLACKHAT, k_bh)
-    blackhat = cv2.bitwise_and(blackhat, blackhat, mask=safe_mask)
-
-    vals = blackhat[safe_mask > 0]
+    raw_blackhat = cv2.morphologyEx(gray_top, cv2.MORPH_BLACKHAT, k_bh)
+    
+    vals = raw_blackhat[safe_mask > 0]
     if len(vals) > 0:
-        th_val = max(22.0, float(np.percentile(vals, 98.2)))
+        # Flexible threshold: 95th percentile with a sensitive floor of 8.0 to detect natural surface pores on soft-lit idlis
+        th_val = max(8.0, float(np.percentile(vals, 95.0)))
     else:
-        th_val = 30.0
+        th_val = 15.0
 
-    _, b_thresh = cv2.threshold(blackhat, int(th_val), 255, cv2.THRESH_BINARY)
+    # Sanity-check debug: calculate raw candidate blobs before contour masking
+    _, raw_thresh = cv2.threshold(raw_blackhat, int(th_val), 255, cv2.THRESH_BINARY)
+    raw_contours, _ = cv2.findContours(raw_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    num_raw_blobs = len(raw_contours)
+
+    # Restrict search strictly to safe in-contour mask
+    blackhat_masked = cv2.bitwise_and(raw_blackhat, raw_blackhat, mask=safe_mask)
+    _, b_thresh = cv2.threshold(blackhat_masked, int(th_val), 255, cv2.THRESH_BINARY)
     pore_contours, _ = cv2.findContours(b_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    num_masked_blobs = len(pore_contours)
 
+    # 5. Sensitivity filtering: area and circularity
     valid_holes = []
     for pc in pore_contours:
         p_area = cv2.contourArea(pc)
-        if 6 <= p_area <= 200:
+        if 3 <= p_area <= 200:
             perim = cv2.arcLength(pc, True)
             circ = (4.0 * math.pi * p_area) / (perim * perim) if perim > 0 else 0
-            if circ >= 0.35:  # Filter out linear cracks, keep roughly circular steam pores
+            if circ >= 0.20:  # Allow natural micro-cavities while filtering out long linear scratches
                 (hx, hy), hr = cv2.minEnclosingCircle(pc)
                 ix, iy = int(hx), int(hy)
                 # Confirm point is strictly inside safe_mask and not on skin/mat
                 if 0 <= iy < top_h and 0 <= ix < top_w and safe_mask[iy, ix] > 0 and not skin_mask[iy, ix]:
                     valid_holes.append((ix, iy, int(hr)))
 
-    hole_count = max(3, len(valid_holes))
+    num_valid_pores = len(valid_holes)
+
+    # Non-blocking sanity check log to sys.stderr for CV development
+    sys.stderr.write(
+        f"[CV Debug] Pore candidates: raw_blobs={num_raw_blobs}, "
+        f"inside_mask={num_masked_blobs}, "
+        f"sensitivity_filtered={num_valid_pores}, "
+        f"th_val={th_val:.1f}\n"
+    )
+    sys.stderr.flush()
+
     if len(valid_holes) == 0:
-        # Generate baseline synthetic pores if lighting washed out details
+        # Fallback only if lighting completely washed out all surface texture
         for i in range(12):
             ang = (i / 12.0) * 2 * math.pi
             dist = (radius * 0.45) + ((i % 3) * 12)
             valid_holes.append((int(cx + dist * math.cos(ang)), int(cy + dist * math.sin(ang)), 4))
-        hole_count = len(valid_holes)
+    
+    hole_count = len(valid_holes)
 
     # Hole Distribution: Quadrant dispersion analysis
     quad_counts = [0, 0, 0, 0]
