@@ -10,6 +10,7 @@ const path = require('path');
 
 const analyzeRouter = require('./routes/analyze');
 const coachRouter = require('./routes/coach');
+const chatRouter = require('./routes/chat');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,10 @@ app.use(express.urlencoded({ extended: true }));
 // Serve frontend static assets
 const frontendPath = path.join(__dirname, '../frontend');
 app.use(express.static(frontendPath));
+
+// Serve ui_elements video assets
+const uiElementsPath = path.join(__dirname, '../ui_elements');
+app.use('/ui_elements', express.static(uiElementsPath));
 
 // API Health Check
 app.get('/api/health', (req, res) => {
@@ -37,6 +42,7 @@ app.get('/api/health', (req, res) => {
 // API Routes
 app.use('/api/analyze', analyzeRouter);
 app.use('/api/coach', coachRouter);
+app.use('/api/chat', chatRouter);
 
 // 404 Handler for undefined API routes
 app.use('/api/*', (req, res) => {

@@ -7,17 +7,36 @@
   <title>Idli Vision — AI & Computer Vision Quality Analyzer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <!-- Chart.js for Section 8.1 Radar Chart -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <!-- ==================================================================== -->
+  <!-- SITE-LOAD INTRO VIDEO OVERLAY                                         -->
+  <!-- ==================================================================== -->
+  <div class="intro-video-overlay" id="introVideoOverlay" role="dialog" aria-modal="true" aria-label="Intro Video">
+    <video 
+      id="introVideo" 
+      class="intro-video-player" 
+      src="/ui_elements/intro.mp4" 
+      autoplay 
+      muted 
+      playsinline 
+      preload="auto"
+    ></video>
+    <button type="button" class="intro-skip-btn" id="introSkipBtn" aria-label="Skip intro video">
+      <span>Skip</span>
+      <span aria-hidden="true">&rarr;</span>
+    </button>
+  </div>
+
   <!-- Ambient Atmospheric Steaming Glow -->
   <div class="steaming-ambient" aria-hidden="true"></div>
 
   <div class="app-container">
-    <!-- Main Header -->
+    <!-- Main Header (Ref-matched brand & horizontal navigation) -->
     <header class="main-header">
       <div class="brand">
         <div class="brand-identity">
@@ -26,55 +45,132 @@
             <h1 class="logo-title">
               <span class="logo-accent">IDLI</span> VISION
             </h1>
-            <p class="tagline">Deterministic Physical Measurement &bull; Calibrated Quality Scoring &bull; AI Coaching</p>
+            <span class="logo-tag">BE HONEST.</span>
           </div>
         </div>
       </div>
+
+      <!-- Horizontal Navigation Links -->
+      <nav class="header-nav" aria-label="Main Navigation">
+        <button type="button" class="header-nav-link active" data-tab="tab-story" id="headerNavStory">Origin & Science</button>
+        <button type="button" class="header-nav-link" data-tab="tab-analyzer" id="headerNavAnalyzer">The Analyzer</button>
+        <button type="button" class="header-nav-link" data-tab="tab-report" id="headerNavReport">Quality Report</button>
+        <button type="button" class="header-nav-link" data-tab="tab-coach" id="headerNavCoach">Idli Coach</button>
+      </nav>
+
+      <!-- Header Top-Right Pill Button & Theme Switch -->
+      <div class="header-actions">
+        <!-- Physical 3D Theme Switch -->
+        <button type="button" 
+                class="theme-switch" 
+                id="themeSwitchBtn" 
+                role="switch" 
+                aria-checked="false" 
+                aria-label="Toggle Banana Leaf Night dark mode"
+                title="Toggle Light / Banana Leaf Night theme">
+          <span class="switch-plate">
+            <span class="switch-slot">
+              <span class="switch-notch notch-off" aria-hidden="true">☀️</span>
+              <span class="switch-rocker">
+                <span class="rocker-face rocker-face-off"></span>
+                <span class="rocker-face rocker-face-on"></span>
+              </span>
+              <span class="switch-notch notch-on" aria-hidden="true">🍃</span>
+            </span>
+          </span>
+        </button>
+
+        <button type="button" class="header-cta-btn" id="btnHeaderGetStarted">
+          <span>GET STARTED</span>
+          <span class="cta-arrow">&rarr;</span>
+        </button>
+      </div>
     </header>
 
-    <!-- Navigation Skeleton (Section 6 Experience Flow) -->
-    <nav class="flow-nav" aria-label="Experience Journey">
-      <button class="nav-step active" data-tab="tab-story" id="navStory">
-        <span class="step-num">01</span>
-        <div class="step-meta">
-          <span class="step-title">Origin & Science</span>
-          <span class="step-sub">Interactive Lore</span>
-        </div>
-      </button>
 
-      <button class="nav-step" data-tab="tab-analyzer" id="navAnalyzer">
-        <span class="step-num">02</span>
-        <div class="step-meta">
-          <span class="step-title">The Analyzer</span>
-          <span class="step-sub">Dual-View Upload</span>
-        </div>
-      </button>
-
-      <button class="nav-step" data-tab="tab-report" id="navReport">
-        <span class="step-num">03</span>
-        <div class="step-meta">
-          <span class="step-title">Quality Report</span>
-          <span class="step-sub">CV Detection & Scores</span>
-        </div>
-      </button>
-
-      <button class="nav-step" data-tab="tab-coach" id="navCoach">
-        <span class="step-num">04</span>
-        <div class="step-meta">
-          <span class="step-title">Idli Coach</span>
-          <span class="step-sub">Roast & Improvement</span>
-        </div>
-      </button>
-    </nav>
 
     <!-- Main Content Area -->
     <main class="content-viewport">
 
       <!-- ==================================================================== -->
-      <!-- TAB 1: ORIGIN & SCIENCE (Interactive Story & Cooking Experience)      -->
+      <!-- TAB 1: ORIGIN & SCIENCE (Hero Showcase, Story & Cooking Experience)   -->
       <!-- ==================================================================== -->
       <section class="tab-pane active" id="tab-story">
-        <div class="section-intro">
+        
+        <!-- HERO SHOWCASE SECTION (Iteration Spec 4 Reference Direction) -->
+        <div class="hero-showcase" id="heroShowcase">
+          <!-- Kicker Line -->
+          <div class="hero-kicker-wrap">
+            <span class="kicker-line"></span>
+            <span class="hero-kicker">&bull; AI-POWERED IDLI QUALITY ANALYSIS &bull;</span>
+            <span class="kicker-line"></span>
+          </div>
+
+          <!-- Two-Part Display Headline (Light / Dark contrast in Fraunces) -->
+          <div class="hero-headline-wrap">
+            <h2 class="hero-display-title">
+              <span class="title-light">Idli</span>
+              <span class="title-dark">Vision.</span>
+            </h2>
+          </div>
+
+          <!-- Central Hero Stage (Appetizing Plate) -->
+          <div class="hero-stage">
+            <div class="hero-plate-container">
+              <img src="assets/hero_idli_sambar.jpg" alt="Steaming Idli on Banana Leaf with Authentic Sambar" class="hero-plate-img">
+            </div>
+          </div>
+
+          <!-- Bottom Row: Asymmetrical Cream Cutout Panels & Center CTA -->
+          <div class="hero-bottom-grid">
+            <!-- Left Cream Cutout Panel -->
+            <div class="hero-cream-card card-left">
+              <div class="card-icon-pill-row">
+                <span class="cream-pill-icon">🌿</span>
+                <span class="cream-pill-icon">📊</span>
+              </div>
+              <h3 class="cream-card-text">
+                From tradition <br>to technology. <br>
+                For a <span class="cream-highlight">better idli.</span>
+              </h3>
+            </div>
+
+            <!-- Center Subheading & Golden CTA -->
+            <div class="hero-center-cta">
+              <p class="hero-tagline-text">Because every idli deserves to be judged.</p>
+              <button type="button" class="btn-primary hero-main-btn" id="heroBtnGetStarted">
+                <span>GET STARTED</span>
+                <span class="btn-arrow">&rarr;</span>
+              </button>
+            </div>
+
+            <!-- Right Cream Cutout Panel -->
+            <div class="hero-cream-card card-right">
+              <div class="card-story-row">
+                <button type="button" class="btn-secondary hero-story-btn" id="heroBtnExploreStory">
+                  <span class="play-triangle">&#9658;</span>
+                  <span>WATCH STORY</span>
+                </button>
+              </div>
+              <div class="card-stat-row">
+                <div class="stat-big">92%</div>
+                <div class="stat-text">
+                  <span class="stat-headline">Idli perfection</span>
+                  <span class="stat-subline">potential</span>
+                </div>
+              </div>
+              <div class="card-link-row">
+                <button type="button" class="cream-arrow-link" id="heroBtnAnalyzeLink">
+                  <span>EXPLORE THE JOURNEY</span>
+                  <span class="arrow-glyph">&rarr;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Transition Intro -->
+        <div class="section-intro" id="storyLoreSection">
           <div class="intro-pill">Origin & Science</div>
           <h2>The Idli Origin Story & Fermentation Physics</h2>
           <p class="intro-desc">
@@ -90,8 +186,8 @@
           </div>
 
           <div class="path-buttons">
-            <!-- 1. Ancient Origin -->
-            <button class="path-btn active" data-path="path-origin" aria-label="Ancient Origin" title="Ancient Origin">
+            <!-- 1. Clash of Ingredients -->
+            <button class="path-btn active" data-path="path-origin" aria-label="Clash of Ingredients" title="Clash of Ingredients">
               <div class="path-anim anim-scroll" aria-hidden="true">
                 <svg class="scroll-svg" viewBox="0 0 36 36">
                   <path class="scroll-roll" d="M8 8 C8 5, 12 5, 12 8 L12 28 C12 31, 8 31, 8 28 Z" />
@@ -101,68 +197,69 @@
                   <line class="scroll-line sl3" x1="15" y1="22" x2="25" y2="22" />
                 </svg>
               </div>
-              <span class="path-caption">Ancient Origin</span>
+              <span class="path-caption">Clash of Ingredients</span>
             </button>
 
-            <!-- 2. Core Ingredients -->
-            <button class="path-btn" data-path="path-ingredients" aria-label="Core Ingredients" title="Core Ingredients">
+            <!-- 2. Rise of the Batter -->
+            <button class="path-btn" data-path="path-ingredients" aria-label="Rise of the Batter" title="Rise of the Batter">
               <div class="path-anim anim-grains" aria-hidden="true">
                 <span class="grain grain-dal g1"></span>
                 <span class="grain grain-rice g2"></span>
                 <span class="grain grain-dal g3"></span>
                 <span class="grain grain-rice g4"></span>
               </div>
-              <span class="path-caption">Core Ingredients</span>
+              <span class="path-caption">Rise of the Batter</span>
             </button>
 
-            <!-- 3. Fermentation -->
-            <button class="path-btn" data-path="path-ferment" aria-label="Fermentation" title="Fermentation">
+            <!-- 3. Emergence of the Idli -->
+            <button class="path-btn" data-path="path-ferment" aria-label="Emergence of the Idli" title="Emergence of the Idli">
               <div class="path-anim anim-bubbles" aria-hidden="true">
                 <span class="bubble-micro bm1"></span>
                 <span class="bubble-micro bm2"></span>
                 <span class="bubble-micro bm3"></span>
                 <span class="bubble-micro bm4"></span>
               </div>
-              <span class="path-caption">Fermentation</span>
+              <span class="path-caption">Emergence of the Idli</span>
             </button>
 
-            <!-- 4. Steaming Physics -->
-            <button class="path-btn" data-path="path-steam" aria-label="Steaming Physics" title="Steaming Physics">
+            <!-- 4. The Finale -->
+            <button class="path-btn" data-path="path-steam" aria-label="The Finale" title="The Finale">
               <div class="path-anim anim-steam" aria-hidden="true">
                 <span class="steam-line st1"></span>
                 <span class="steam-line st2"></span>
                 <span class="steam-line st3"></span>
               </div>
-              <span class="path-caption">Steaming Physics</span>
+              <span class="path-caption">The Finale</span>
             </button>
           </div>
 
           <div class="path-display" id="pathDisplay">
             <div class="path-content active" id="path-origin">
               <h4>From <em>Iddalige</em> to the Modern Plate</h4>
-              <p>
-                The earliest recorded mention of the idli appears in the Kannada text <em>Vaddaradhane</em> by Sivakotiacharya in 920 CE as <strong>Iddalige</strong> — fermented urad dal batter seasoned with cumin and coriander. Later, the Sanskrit encyclopedia <em>Manasollasa</em> (1130 CE) describes <em>Iddarika</em>. The technique of steaming via perforated plates arrived in the medieval era, transforming dense cakes into the airy clouds we revere today.
-              </p>
+              <div class="path-video-wrapper">
+                <video class="path-video" id="video-origin" src="/ui_elements/first.mp4" muted playsinline loop preload="metadata"></video>
+              </div>
             </div>
             <div class="path-content" id="path-ingredients">
               <h4>The Molecular 4:1 Symphony</h4>
-              <p>
-                Authentic idli batter demands precision stoichiometry: <strong>4 parts parboiled rice</strong> to <strong>1 part whole de-husked urad dal (black gram)</strong>. The urad dal provides surface-active globulin proteins and mucilage that trap carbon dioxide bubbles, while the rice provides the crystalline starch scaffolding that gelatinizes during steaming.
-              </p>
+              <div class="path-video-wrapper">
+                <video class="path-video" id="video-ingredients" src="/ui_elements/second.mp4" muted playsinline loop preload="metadata"></video>
+              </div>
             </div>
             <div class="path-content" id="path-ferment">
               <h4>Heterofermentative Microbial Magic</h4>
-              <p>
-                Fermentation is driven by wild lactic acid bacteria (<em>Leuconostoc mesenteroides</em> and <em>Lactobacillus fermentum</em>) naturally resident on the grain husks. Over 8 to 14 hours at 28–32°C, these microbes produce carbon dioxide gas that inflates the batter volume by 100%, alongside subtle lactic acids that give idli its characteristic tender tang.
-              </p>
+              <div class="path-video-wrapper">
+                <video class="path-video" id="video-ferment" src="/ui_elements/third.mp4" muted playsinline loop preload="metadata"></video>
+              </div>
             </div>
             <div class="path-content" id="path-steam">
               <h4>Thermodynamic Gelatinization at 100°C</h4>
-              <p>
-                Steaming transfers latent heat instantly without shearing forces. As steam permeates the batter mold, starch granules absorb water and swell (gelatinization), while dal proteins denature into a stable, spongy matrix that traps thousands of microscopic steam pores.
-              </p>
+              <div class="path-video-wrapper">
+                <video class="path-video" id="video-steam" src="/ui_elements/fourth.mp4" muted playsinline loop preload="metadata"></video>
+              </div>
             </div>
           </div>
+
         </div>
 
         <!-- Sequential Cooking Mini-Game (Item 7) -->
@@ -463,25 +560,38 @@
 
         <!-- Results Loaded Container -->
         <div class="report-content" id="reportContent">
+          <!-- Empty / Pending State Banner (Shown before real analysis completes) -->
+          <div class="report-empty-state" id="reportEmptyState">
+            <div class="empty-state-badge">Pending Analysis</div>
+            <h3 class="empty-state-title">No Analysis Yet</h3>
+            <p class="empty-state-desc">
+              No analysis yet — upload your idli on the Analyzer page to generate your report.
+            </p>
+            <div class="empty-state-actions">
+              <button type="button" class="btn-primary" id="btnReportGoToAnalyzer">
+                <span>Go to The Analyzer</span>
+                <span class="cta-arrow">&rarr;</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Overall Score Hero Banner -->
-          <div class="score-hero-card">
+          <div class="score-hero-card" id="scoreHeroCard">
             <div class="score-ring-wrapper">
               <svg class="score-ring" viewBox="0 0 120 120">
                 <circle class="ring-bg" cx="60" cy="60" r="50"></circle>
-                <circle class="ring-fill" id="scoreRingFill" cx="60" cy="60" r="50" style="stroke-dashoffset: 60;"></circle>
+                <circle class="ring-fill" id="scoreRingFill" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
               </svg>
               <div class="score-number-display">
-                <span class="score-big" id="overallScoreVal">90</span>
+                <span class="score-big" id="overallScoreVal">--</span>
                 <span class="score-denom">/ 100</span>
               </div>
             </div>
 
             <div class="score-meta-details">
-              <div class="category-badge" id="categoryBadge">Idli Master</div>
-              <h3 id="scoreTitle">Exceptional Structural Integrity</h3>
-              <p id="scoreSummary">
-                Your idli demonstrates precise circular mold fill and textbook vertical leavening. Minimal edge distortion and well-dispersed surface steam vents.
-              </p>
+              <div class="category-badge" id="categoryBadge">--</div>
+              <h3 id="scoreTitle">--</h3>
+              <p id="scoreSummary"></p>
               <div class="report-actions-row">
                 <button type="button" class="btn-primary" id="consultCoachBtn">Consult The Idli Coach &rarr;</button>
                 <button type="button" class="btn-secondary" id="compareModeBtn">Compare With Another Idli</button>
@@ -490,7 +600,7 @@
           </div>
 
           <!-- Section 7.5 Visual Detection Overlays Viewer -->
-          <div class="visual-inspection-card">
+          <div class="visual-inspection-card" id="visualInspectionCard">
             <div class="card-header-flex">
               <div>
                 <span class="card-badge">Detection Overlays</span>
@@ -543,7 +653,7 @@
           </div>
 
           <!-- Radar Chart & Metrics Grid -->
-          <div class="analytics-row">
+          <div class="analytics-row" id="analyticsRow">
             <!-- Radar Chart -->
             <div class="chart-card">
               <div class="card-header">
@@ -562,98 +672,90 @@
               <div class="metric-row-card">
                 <div class="m-info">
                   <span class="m-title">Diameter</span>
-                  <span class="m-val" id="metricDiaVal">7.85 cm</span>
+                  <span class="m-val" id="metricDiaVal">--</span>
                   <span class="m-target">Target: 8.0 cm</span>
                 </div>
                 <div class="m-bar-wrap">
-                  <div class="m-bar-fill" id="barDia" style="width: 98%;"></div>
+                  <div class="m-bar-fill" id="barDia" style="width: 0%;"></div>
                 </div>
-                <span class="m-score" id="scoreDia">98/100</span>
+                <span class="m-score" id="scoreDia">--/100</span>
               </div>
 
               <!-- Thickness -->
               <div class="metric-row-card">
                 <div class="m-info">
                   <span class="m-title">Thickness</span>
-                  <span class="m-val" id="metricThickVal">2.25 cm</span>
+                  <span class="m-val" id="metricThickVal">--</span>
                   <span class="m-target">Target: 2.3 cm</span>
                 </div>
                 <div class="m-bar-wrap">
-                  <div class="m-bar-fill" id="barThick" style="width: 98%;"></div>
+                  <div class="m-bar-fill" id="barThick" style="width: 0%;"></div>
                 </div>
-                <span class="m-score" id="scoreThick">98/100</span>
+                <span class="m-score" id="scoreThick">--/100</span>
               </div>
 
               <!-- Roundness -->
               <div class="metric-row-card">
                 <div class="m-info">
                   <span class="m-title">Roundness</span>
-                  <span class="m-val" id="metricRoundVal">0.88</span>
+                  <span class="m-val" id="metricRoundVal">--</span>
                   <span class="m-target">Target: 0.85+</span>
                 </div>
                 <div class="m-bar-wrap">
-                  <div class="m-bar-fill" id="barRound" style="width: 88%;"></div>
+                  <div class="m-bar-fill" id="barRound" style="width: 0%;"></div>
                 </div>
-                <span class="m-score" id="scoreRound">88/100</span>
+                <span class="m-score" id="scoreRound">--/100</span>
               </div>
 
               <!-- Symmetry -->
               <div class="metric-row-card">
                 <div class="m-info">
                   <span class="m-title">Symmetry</span>
-                  <span class="m-val" id="metricSymmVal">0.82</span>
+                  <span class="m-val" id="metricSymmVal">--</span>
                   <span class="m-target">Target: 0.80+</span>
                 </div>
                 <div class="m-bar-wrap">
-                  <div class="m-bar-fill" id="barSymm" style="width: 82%;"></div>
+                  <div class="m-bar-fill" id="barSymm" style="width: 0%;"></div>
                 </div>
-                <span class="m-score" id="scoreSymm">82/100</span>
+                <span class="m-score" id="scoreSymm">--/100</span>
               </div>
 
               <!-- Deformity -->
               <div class="metric-row-card">
                 <div class="m-info">
                   <span class="m-title">Edge Integrity</span>
-                  <span class="m-val" id="metricDefVal">88%</span>
+                  <span class="m-val" id="metricDefVal">--</span>
                   <span class="m-target">Target: 80%+</span>
                 </div>
                 <div class="m-bar-wrap">
-                  <div class="m-bar-fill" id="barDef" style="width: 88%;"></div>
+                  <div class="m-bar-fill" id="barDef" style="width: 0%;"></div>
                 </div>
-                <span class="m-score" id="scoreDef">88/100</span>
+                <span class="m-score" id="scoreDef">--/100</span>
               </div>
 
               <!-- Aeration Pores -->
               <div class="metric-row-card">
                 <div class="m-info">
                   <span class="m-title">Pores & Aeration</span>
-                  <span class="m-val" id="metricPoresVal">14 Pores</span>
+                  <span class="m-val" id="metricPoresVal">--</span>
                   <span class="m-target">Uniformity: 74/100</span>
                 </div>
                 <div class="m-bar-wrap">
-                  <div class="m-bar-fill" id="barPores" style="width: 74%;"></div>
+                  <div class="m-bar-fill" id="barPores" style="width: 0%;"></div>
                 </div>
-                <span class="m-score" id="scorePores">74/100</span>
+                <span class="m-score" id="scorePores">--/100</span>
               </div>
             </div>
           </div>
 
           <!-- Detected Issues Breakdown -->
-          <div class="issues-card">
+          <div class="issues-card" id="issuesCard">
             <div class="card-header">
               <span class="card-badge">Diagnostic Observations</span>
               <h3>Physical Telemetry Findings</h3>
               <p class="card-hint">OpenCV contour and thickness analysis:</p>
             </div>
-            <div class="issues-list" id="issuesList">
-              <div class="issue-item good">
-                <span class="issue-icon">✅</span>
-                <div class="issue-body">
-                  <strong>Concentric Mold Conformance</strong>
-                  <p>Diameter and roundness both exceed 85% target threshold without noticeable mold drag.</p>
-                </div>
-              </div>
-            </div>
+            <div class="issues-list" id="issuesList"></div>
           </div>
         </div>
       </section>
@@ -749,8 +851,90 @@
               <button type="button" class="btn-primary" id="btnAnalyzeAnother">Analyze Another Idli</button>
             </div>
           </div>
+
+          <!-- ========================================================== -->
+          <!-- Freeform Idli Chatbot (Grok API Conversational Surface)     -->
+          <!-- ========================================================== -->
+          <div class="coach-chat-section" id="coachChatSection">
+            <div class="chat-section-header">
+              <div class="chat-header-main">
+                <div class="chat-title-group">
+                  <span class="chat-badge">🔥 Freeform Live Q&A</span>
+                  <h3 id="chatHeading">Ask Coach Subramanian Anything</h3>
+                </div>
+                <p class="chat-sub">
+                  Open-ended troubleshooting, fermentation doubts, ingredient science, or recipe questions. Expect a playful roast followed by genuine South Indian culinary physics!
+                </p>
+              </div>
+              <div class="chat-engine-pill" id="chatEngineStatus" title="Powered by xAI Grok API">
+                <span class="engine-dot"></span> Powered by Grok AI
+              </div>
+            </div>
+
+            <div class="chat-panel" id="coachChatPanel" role="region" aria-labelledby="chatHeading">
+              <!-- Scrollable Messages Log -->
+              <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Conversation with Coach Subramanian">
+                <!-- Welcome Initial Message -->
+                <div class="chat-msg coach">
+                  <div class="msg-avatar" aria-hidden="true">👨‍🍳</div>
+                  <div class="msg-content">
+                    <div class="msg-header">
+                      <span class="msg-author">Head Coach Subramanian</span>
+                      <span class="msg-tag">Batter Master</span>
+                    </div>
+                    <div class="msg-bubble">
+                      <p>Vanakkam! What culinary felony are you preparing to commit against idli batter today? Ask me about cold-weather fermentation, urad-to-rice ratios, wet grinder physics, or why your idlis resemble hockey pucks.</p>
+                      <p>I will roast you first, then deliver the exact food science and a kitchen-tested fix. Ask away!</p>
+                    </div>
+                    <span class="msg-time">Just now</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Typing / Loading Indicator -->
+              <div class="chat-typing hidden" id="chatTyping" aria-live="polite">
+                <div class="msg-avatar" aria-hidden="true">👨‍🍳</div>
+                <div class="typing-box">
+                  <div class="typing-dots">
+                    <span></span><span></span><span></span>
+                  </div>
+                  <span class="typing-label">Coach Subramanian is roasting and formulating advice...</span>
+                </div>
+              </div>
+
+              <!-- Suggestion Prompt Chips -->
+              <div class="chat-suggestions-tray" id="chatSuggestions">
+                <span class="sugg-label">Sample Questions:</span>
+                <button type="button" class="chat-chip" data-prompt="Why is my batter not fermenting in the winter?">❄️ Why is batter not fermenting in winter?</button>
+                <button type="button" class="chat-chip" data-prompt="Can I substitute idli rice with regular basmati rice?">🌾 Can I use basmati rice?</button>
+                <button type="button" class="chat-chip" data-prompt="Why do my idlis stick to the plate or cloth when removing?">🥄 Why do idlis stick to the plate?</button>
+                <button type="button" class="chat-chip" data-prompt="What secret ingredient makes idlis extraordinarily soft and fluffy?">✨ Secret for ultra-fluffy idlis?</button>
+              </div>
+
+              <!-- Chat Input Bar -->
+              <form class="chat-input-form" id="chatForm">
+                <label for="chatInput" class="sr-only">Ask Coach Subramanian anything</label>
+                <div class="chat-input-wrapper">
+                  <input 
+                    type="text" 
+                    id="chatInput" 
+                    class="chat-input" 
+                    placeholder="Ask Coach Subramanian anything about idlis, fermentation, or steaming..." 
+                    autocomplete="off" 
+                    maxlength="500"
+                    required
+                  />
+                  <button type="submit" id="chatSendBtn" class="chat-send-btn" aria-label="Send message to Coach Subramanian">
+                    <span class="btn-text">Send</span>
+                    <span class="btn-icon" aria-hidden="true">➤</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </section>
+
 
     </main>
 

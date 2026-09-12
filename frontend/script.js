@@ -19,34 +19,248 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // -------------------------------------------------------------
+  // 0. Site-Load Intro Video Overlay
+  // -------------------------------------------------------------
+  const introOverlay = document.getElementById('introVideoOverlay');
+  const introVideo = document.getElementById('introVideo');
+  const introSkipBtn = document.getElementById('introSkipBtn');
+
+  function dismissIntroVideo() {
+    if (!introOverlay || introOverlay.classList.contains('dismissed')) return;
+    introOverlay.classList.add('dismissed');
+    if (introVideo) {
+      introVideo.pause();
+    }
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      introOverlay.style.display = 'none';
+    }, 500);
+  }
+
+  if (introOverlay && introVideo) {
+    document.body.style.overflow = 'hidden';
+
+    // Auto-play muted on load to satisfy browser policy
+    introVideo.muted = true;
+    const playPromise = introVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(e => {
+        console.log('Intro video autoplay prevented by browser:', e.message);
+      });
+    }
+
+    // Auto-dismiss on video natural finish
+    introVideo.addEventListener('ended', dismissIntroVideo);
+
+    // Dismiss on Skip button click
+    if (introSkipBtn) {
+      introSkipBtn.addEventListener('click', dismissIntroVideo);
+    }
+  }
+
+  // -------------------------------------------------------------
+  // 0.5 Theme Toggle & Character Shower Transition (Banana Leaf Night)
+  // -------------------------------------------------------------
+  const themeSwitchBtn = document.getElementById('themeSwitchBtn');
+  const THEME_STORAGE_KEY = 'idli_vision_theme';
+  let isThemeTransitioning = false;
+
+  const characterImages = [
+    '/ui_elements/blush.png',
+    '/ui_elements/smile.png',
+    '/ui_elements/angry.png'
+  ];
+
+  function getStoredTheme() {
+    try {
+      return localStorage.getItem(THEME_STORAGE_KEY) || 'light';
+    } catch (e) {
+      return 'light';
+    }
+  }
+
+  function setStoredTheme(theme) {
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch (e) {}
+  }
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (themeSwitchBtn) {
+        themeSwitchBtn.setAttribute('aria-checked', 'true');
+      }
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      if (themeSwitchBtn) {
+        themeSwitchBtn.setAttribute('aria-checked', 'false');
+      }
+    }
+  }
+
+  // Initialize theme from persistence immediately on load
+  const initialTheme = getStoredTheme();
+  applyTheme(initialTheme);
+
+  function triggerCharacterShower(targetTheme) {
+    if (isThemeTransitioning) return;
+    isThemeTransitioning = true;
+
+    // Create full-screen shower overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'character-shower-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    // Generate 28 randomized characters
+    const count = 28;
+    for (let i = 0; i < count; i++) {
+      const char = document.createElement('img');
+      const randomSrc = characterImages[Math.floor(Math.random() * characterImages.length)];
+      char.src = randomSrc;
+      char.alt = '';
+      char.className = 'shower-char';
+
+      const leftPercent = (Math.random() * 92 + 3).toFixed(1);
+      const sizePx = Math.floor(Math.random() * 32 + 40); // 40px to 72px
+      const durationMs = Math.floor(Math.random() * 250 + 720); // 720ms to 970ms
+      const delayMs = Math.floor(Math.random() * 220); // 0ms to 220ms
+      const rotStart = Math.floor(Math.random() * 36 - 18); // -18deg to +18deg
+      const rotEnd = rotStart + Math.floor(Math.random() * 28 - 14);
+
+      char.style.left = `${leftPercent}%`;
+      char.style.setProperty('--char-size', `${sizePx}px`);
+      char.style.setProperty('--rot-start', `${rotStart}deg`);
+      char.style.setProperty('--rot-end', `${rotEnd}deg`);
+      char.style.animationDuration = `${durationMs}ms`;
+      char.style.animationDelay = `${delayMs}ms`;
+
+      overlay.appendChild(char);
+    }
+
+    document.body.appendChild(overlay);
+
+    // Swap theme at midway (~380ms) while shower is in full flight
+    setTimeout(() => {
+      applyTheme(targetTheme);
+      setStoredTheme(targetTheme);
+    }, 380);
+
+    // Clean up overlay after all characters have passed the screen
+    setTimeout(() => {
+      if (overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+      }
+      isThemeTransitioning = false;
+    }, 1150);
+  }
+
+  if (themeSwitchBtn) {
+    themeSwitchBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      triggerCharacterShower(targetTheme);
+    });
+  }
+
+  // -------------------------------------------------------------
   // 1. Navigation Flow Handlers
   // -------------------------------------------------------------
-  const navButtons = document.querySelectorAll('.nav-step');
+  const headerNavLinks = document.querySelectorAll('.header-nav-link');
   const tabPanes = document.querySelectorAll('.tab-pane');
 
   function switchTab(targetTabId) {
-    navButtons.forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-tab') === targetTabId);
+    headerNavLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('data-tab') === targetTabId);
     });
 
     tabPanes.forEach(pane => {
       pane.classList.toggle('active', pane.id === targetTabId);
     });
 
+    // Pause all path videos when leaving Origin & Science tab
+    if (targetTabId !== 'tab-story') {
+      document.querySelectorAll('.path-video').forEach(vid => vid.pause());
+    }
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  navButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      switchTab(btn.getAttribute('data-tab'));
+  headerNavLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      switchTab(link.getAttribute('data-tab'));
     });
   });
 
+  const btnHeaderGetStarted = document.getElementById('btnHeaderGetStarted');
+  if (btnHeaderGetStarted) {
+    btnHeaderGetStarted.addEventListener('click', () => switchTab('tab-analyzer'));
+  }
+
+  const heroBtnGetStarted = document.getElementById('heroBtnGetStarted');
+  if (heroBtnGetStarted) {
+    heroBtnGetStarted.addEventListener('click', () => switchTab('tab-analyzer'));
+  }
+
+  const heroBtnAnalyzeLink = document.getElementById('heroBtnAnalyzeLink');
+  if (heroBtnAnalyzeLink) {
+    heroBtnAnalyzeLink.addEventListener('click', () => switchTab('tab-analyzer'));
+  }
+
+  const heroBtnExploreStory = document.getElementById('heroBtnExploreStory');
+  if (heroBtnExploreStory) {
+    heroBtnExploreStory.addEventListener('click', () => {
+      const target = document.getElementById('storyLoreSection');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
   // -------------------------------------------------------------
-  // 2. Section 6.1: Origin Story Path Exploration
+  // 2. Section 6.1: Origin Story Path Exploration & Video Playback
   // -------------------------------------------------------------
   const pathButtons = document.querySelectorAll('.path-btn');
   const pathContents = document.querySelectorAll('.path-content');
+  const pathDisplay = document.getElementById('pathDisplay');
+
+  // Helper function to get currently active path video
+  function getActivePathVideo() {
+    const activeContent = document.querySelector('.path-content.active');
+    return activeContent ? activeContent.querySelector('.path-video') : null;
+  }
+
+  // Ensure all path videos start paused until scrolled into view
+  document.querySelectorAll('.path-video').forEach(vid => {
+    vid.pause();
+  });
+
+  // Scroll-triggered playback: plays active video when section enters viewport
+  if (pathDisplay && 'IntersectionObserver' in window) {
+    const videoSectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const activeVid = getActivePathVideo();
+        if (!activeVid) return;
+
+        if (entry.isIntersecting) {
+          // Section in viewport: start/resume playback of active video
+          const playPromise = activeVid.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              console.log('Path video autoplay deferred:', e.message);
+            });
+          }
+        } else {
+          // Section out of viewport: pause playback
+          activeVid.pause();
+        }
+      });
+    }, {
+      threshold: 0.2 // Trigger when at least 20% of the video section is visible
+    });
+
+    videoSectionObserver.observe(pathDisplay);
+  }
 
   pathButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -56,13 +270,34 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       pathContents.forEach(c => c.classList.remove('active'));
 
+      // Pause all other path videos and reset playback position
+      document.querySelectorAll('.path-video').forEach(vid => {
+        vid.pause();
+        vid.currentTime = 0;
+      });
+
       btn.classList.add('active');
       btn.setAttribute('aria-selected', 'true');
       const targetId = btn.getAttribute('data-path');
       const targetEl = document.getElementById(targetId);
-      if (targetEl) targetEl.classList.add('active');
+      if (targetEl) {
+        targetEl.classList.add('active');
+
+        // Play the newly selected path video
+        const activeVideo = targetEl.querySelector('.path-video');
+        if (activeVideo) {
+          activeVideo.currentTime = 0;
+          const playPromise = activeVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              console.log('Path video autoplay prevented:', e.message);
+            });
+          }
+        }
+      }
     });
   });
+
 
   // -------------------------------------------------------------
   // 3. Sequential Cooking Mini-Game (Spec Item 7)
@@ -522,6 +757,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------------------------------------------
   // 6. Section 8.1: Render Quality Report & Radar Chart
   // -------------------------------------------------------------
+  const reportEmptyState = document.getElementById('reportEmptyState');
+  const scoreHeroCard = document.getElementById('scoreHeroCard');
+  const analyticsRow = document.getElementById('analyticsRow');
+  const issuesCard = document.getElementById('issuesCard');
+  const btnReportGoToAnalyzer = document.getElementById('btnReportGoToAnalyzer');
+
   const overallScoreVal = document.getElementById('overallScoreVal');
   const scoreRingFill = document.getElementById('scoreRingFill');
   const categoryBadge = document.getElementById('categoryBadge');
@@ -561,7 +802,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const issuesList = document.getElementById('issuesList');
 
+  function updateQualityReportDisplay() {
+    const hasRealData = Boolean(state.analysisResult);
+    if (reportEmptyState) {
+      reportEmptyState.style.display = hasRealData ? 'none' : 'flex';
+    }
+    if (scoreHeroCard) {
+      scoreHeroCard.style.display = hasRealData ? 'flex' : 'none';
+    }
+    if (analyticsRow) {
+      analyticsRow.style.display = hasRealData ? 'grid' : 'none';
+    }
+    if (issuesCard) {
+      issuesCard.style.display = hasRealData ? 'block' : 'none';
+    }
+  }
+
+  // Initialize Quality Report display (defaults to empty/pending state)
+  updateQualityReportDisplay();
+
+  if (btnReportGoToAnalyzer) {
+    btnReportGoToAnalyzer.addEventListener('click', () => {
+      switchTab('tab-analyzer');
+    });
+  }
+
   function renderQualityReport(data) {
+    updateQualityReportDisplay();
     const { measurements, scores } = data;
     const { overallScore, category, metrics, detectedIssues = [], radarData } = scores;
 
@@ -858,4 +1125,226 @@ document.addEventListener('DOMContentLoaded', () => {
       comparisonModal.classList.add('hidden');
     });
   }
+
+  // -------------------------------------------------------------
+  // 9. Freeform Idli Chatbot (Grok API Integration)
+  // -------------------------------------------------------------
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatSendBtn = document.getElementById('chatSendBtn');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatTyping = document.getElementById('chatTyping');
+  const chatEngineStatus = document.getElementById('chatEngineStatus');
+  const chatSuggestions = document.getElementById('chatSuggestions');
+
+  const chatSessionHistory = [];
+
+  function formatTimeNow() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function formatCoachReply(text) {
+    if (!text) return '';
+    // Split into paragraphs by double newlines or single newlines
+    const rawParagraphs = text.split(/\n\s*\n/);
+    return rawParagraphs.map(p => {
+      const clean = escapeHtml(p.trim());
+      // Convert markdown-style bullet points
+      if (clean.includes('\n- ') || clean.includes('\n* ') || clean.startsWith('- ') || clean.startsWith('* ')) {
+        const lines = clean.split('\n');
+        let html = '';
+        let inList = false;
+        lines.forEach(l => {
+          const trimmed = l.trim();
+          if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+            if (!inList) { html += '<ul style="margin: 0.5rem 0 0.5rem 1.25rem;">'; inList = true; }
+            html += `<li>${trimmed.substring(2)}</li>`;
+          } else {
+            if (inList) { html += '</ul>'; inList = false; }
+            html += `${trimmed}<br/>`;
+          }
+        });
+        if (inList) html += '</ul>';
+        return `<p>${html}</p>`;
+      }
+      return `<p>${clean.replace(/\n/g, '<br/>')}</p>`;
+    }).join('');
+  }
+
+  function appendChatMessage(role, text, isError = false) {
+    if (!chatMessages) return;
+
+    const msgEl = document.createElement('div');
+    const timeStr = formatTimeNow();
+
+    if (role === 'user') {
+      msgEl.className = 'chat-msg user';
+      msgEl.innerHTML = `
+        <div class="msg-avatar" aria-hidden="true">👤</div>
+        <div class="msg-content">
+          <div class="msg-header">
+            <span class="msg-author">You</span>
+          </div>
+          <div class="msg-bubble">
+            <p>${escapeHtml(text)}</p>
+          </div>
+          <span class="msg-time">${timeStr}</span>
+        </div>
+      `;
+    } else if (isError) {
+      msgEl.className = 'chat-msg coach error-msg';
+      msgEl.innerHTML = `
+        <div class="msg-avatar" aria-hidden="true">⚠️</div>
+        <div class="msg-content">
+          <div class="msg-header">
+            <span class="msg-author">Coach Subramanian Notice</span>
+            <span class="msg-tag" style="background: rgba(244, 63, 94, 0.2); color: #fda4af;">Service Alert</span>
+          </div>
+          <div class="msg-bubble">
+            <div class="error-title">
+              <span>⚠️ Could Not Reach Coach Subramanian</span>
+            </div>
+            <div class="error-detail">
+              ${escapeHtml(text)}
+            </div>
+          </div>
+          <span class="msg-time">${timeStr}</span>
+        </div>
+      `;
+    } else {
+      msgEl.className = 'chat-msg coach';
+      msgEl.innerHTML = `
+        <div class="msg-avatar" aria-hidden="true">👨‍🍳</div>
+        <div class="msg-content">
+          <div class="msg-header">
+            <span class="msg-author">Head Coach Subramanian</span>
+            <span class="msg-tag">Batter Master</span>
+          </div>
+          <div class="msg-bubble">
+            ${formatCoachReply(text)}
+          </div>
+          <span class="msg-time">${timeStr}</span>
+        </div>
+      `;
+    }
+
+    chatMessages.appendChild(msgEl);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function checkGrokStatus() {
+    try {
+      const res = await fetch('/api/chat/status');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (chatEngineStatus) {
+        if (data.grokConfigured) {
+          chatEngineStatus.innerHTML = '<span class="engine-dot" style="background: #10b981; box-shadow: 0 0 8px #10b981;"></span> Grok AI Active';
+          chatEngineStatus.style.color = '#10b981';
+          chatEngineStatus.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+        } else {
+          chatEngineStatus.innerHTML = '<span class="engine-dot" style="background: #f59e0b; box-shadow: 0 0 8px #f59e0b;"></span> Grok Key Unset';
+          chatEngineStatus.style.color = '#f59e0b';
+          chatEngineStatus.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+          chatEngineStatus.title = 'Add GROK_API_KEY to your .env file to enable live AI responses.';
+        }
+      }
+    } catch (_) {
+      // Ignore background check failure
+    }
+  }
+
+  async function sendFreeformChatMessage(userText) {
+    if (!userText || !userText.trim()) return;
+    const cleanText = userText.trim();
+
+    // 1. Append User Message
+    appendChatMessage('user', cleanText);
+    chatSessionHistory.push({ role: 'user', content: cleanText });
+
+    // 2. UI Loading State
+    if (chatInput) {
+      chatInput.value = '';
+      chatInput.disabled = true;
+    }
+    if (chatSendBtn) {
+      chatSendBtn.disabled = true;
+      chatSendBtn.querySelector('.btn-text').textContent = 'Sending...';
+    }
+    if (chatTyping) {
+      chatTyping.classList.remove('hidden');
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: cleanText,
+          history: chatSessionHistory.slice(-8),
+          scoringData: state.analysisResult?.scores || null
+        })
+      });
+
+      const payload = await res.json().catch(() => ({}));
+
+      if (chatTyping) chatTyping.classList.add('hidden');
+
+      if (!res.ok || !payload.success) {
+        const errMessage = payload.error || `Server responded with status ${res.status}`;
+        appendChatMessage('coach', errMessage, true);
+      } else {
+        appendChatMessage('coach', payload.reply);
+        chatSessionHistory.push({ role: 'assistant', content: payload.reply });
+      }
+    } catch (err) {
+      if (chatTyping) chatTyping.classList.add('hidden');
+      appendChatMessage(
+        'coach',
+        `Network connection failed: ${err.message}. Please check that the server is running.`,
+        true
+      );
+    } finally {
+      if (chatInput) {
+        chatInput.disabled = false;
+        chatInput.focus();
+      }
+      if (chatSendBtn) {
+        chatSendBtn.disabled = false;
+        chatSendBtn.querySelector('.btn-text').textContent = 'Send';
+      }
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+
+  if (chatForm) {
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (chatInput) {
+        sendFreeformChatMessage(chatInput.value);
+      }
+    });
+  }
+
+  // Quick suggestion chips
+  document.querySelectorAll('.chat-chip[data-prompt]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const prompt = chip.getAttribute('data-prompt');
+      if (prompt) {
+        sendFreeformChatMessage(prompt);
+      }
+    });
+  });
+
+  // Check initial Grok config status
+  checkGrokStatus();
 });
+
