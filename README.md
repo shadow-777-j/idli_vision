@@ -101,135 +101,84 @@ This image shows the Idli coach who gives tips on how to improve our idli and an
 
 # Diagrams
 
+```mermaid
+flowchart TD
+    User["👤 User (Browser)"] -->|"1. Uploads Idli Images (Top + Side)"| FE["🖥️ Frontend (HTML / CSS / JS)"]
+    FE -->|"2. POST /api/analyze"| BE["⚙️ Backend (Node.js / Express)"]
+    
+    subgraph CV_Engine ["Computer Vision & Scoring"]
+        BE -->|"3. Execute Script"| CV["👁️ OpenCV Pipeline (Python)"]
+        CV -->|"Diameter, Roundness, Thickness, Pores"| Score["📊 Scoring Engine (scoringService.js)"]
+    end
+    
+    Score -->|"4. Telemetry Scores & Visual Overlays"| FE
+    
+    subgraph AI_Services ["AI Intelligence Layer"]
+        FE -->|"5. Consult Idli Coach"| Gemini["🤖 Gemini AI (Structured Roast & Science)"]
+        FE -->|"6. Ask Doubts Chat"| Grok["⚡ Grok AI (Comedic Quick Roast)"]
+    end
+    
+    Gemini -.->|"Detailed Coaching Report"| FE
+    Grok -.->|"Chat Response"| FE
+```
 
-                              IDLI VISION — SYSTEM WORKFLOW
-                              ===============================
-
-  USER (Browser)
-      │
-      │  1. Explores origin story, plays ingredient cooking mini-game
-      │  2. Uploads Top View + Side View images of idli
-      ▼
-┌─────────────────────────┐
-│   FRONTEND               │
-│  HTML + CSS + JS         │
-└─────────────────────────┘
-      │
-      │  POST /api/analyze  (images via Multer)
-      ▼
-┌─────────────────────────┐
-│   BACKEND                │
-│  Node.js + Express       │
-└─────────────────────────┘
-      │
-      │  spawns child process, passes image paths
-      ▼
-┌─────────────────────────┐
-│   COMPUTER VISION        │
-│  Python + OpenCV         │
-├─────────────────────────┤
-│  • Preprocess image      │
-│  • Detect contour        │
-│  • Calibrate px → cm     │
-│  • Diameter               │
-│  • Roundness              │
-│  • Symmetry                │
-│  • Deformity                │
-│  • Thickness (side view)    │
-│  • Pore/hole detection      │
-│  • Pore distribution         │
-└─────────────────────────┘
-      │
-      │  returns raw measurements as JSON
-      ▼
-┌─────────────────────────┐
-│   SCORING ENGINE          │
-│  backend/services/        │
-│  scoringService.js        │
-├─────────────────────────┤
-│  • Normalize measurements  │
-│  • Apply weighted formulas │
-│  • Compute per-metric score│
-│  • Compute overall score   │
-│  • Assign category label   │
-└─────────────────────────┘
-      │
-      │  structured score object
-      │  { overallScore, diameter, thickness,
-      │    roundness, symmetry, deformity,
-      │    holeCount, holeDistribution }
-      ▼
-┌─────────────────────────┐
-│   FRONTEND                │
-│  Quality Report screen    │
-│  (scores + annotated       │
-│   overlay images)          │
-└─────────────────────────┘
-      │
-      │  user clicks "Consult Idli Coach"
-      │  or asks a quick-score question
-      ▼
-┌─────────────────────────┐
-│   BACKEND                 │
-│  geminiService.js          │
-└─────────────────────────┘
-      │
-      │  sends structured score data
-      ▼
-┌─────────────────────────┐
-│   GEMINI API                │
-├─────────────────────────┤
-│  • Interprets scores        │
-│  • Generates roast           │
-│  • Generates explanation      │
-│  • Generates improvement plan  │
-└─────────────────────────┘
-      │
-      │  structured coaching response
-      ▼
-┌─────────────────────────┐
-│   FRONTEND                  │
-│  Idli Coach — structured     │
-│  report (Critique → Science  │
-│  → Directives → Target Plan) │
-└─────────────────────────┘
-
-
-                    ── PARALLEL PATH: FREEFORM CHATBOT ──
-
-  USER types a free question
-      │
-      ▼
-┌─────────────────────────┐
-│   FRONTEND                 │
-│  Chat panel                │
-└─────────────────────────┘
-      │
-      │  POST /api/chat
-      ▼
-┌─────────────────────────┐
-│   BACKEND                  │
-│  grokService.js             │
-└─────────────────────────┘
-      │
-      ▼
-┌─────────────────────────┐
-│   GROK API                   │
-├─────────────────────────┤
-│  • Short roast + quick tip    │
-└─────────────────────────┘
-      │
-      ▼
-┌─────────────────────────┐
-│   FRONTEND                    │
-│  Chat response rendered        │
-└─────────────────────────┘
-
-
-  KEY SECURITY BOUNDARY
-  ──────────────────────
-  Browser  ──X──>  Gemini/Grok API      (never allowed)
-  Browser  ───>  Backend  ───>  Gemini/Grok API   (only allowed path)
+```text
++-----------------------------------------------------------------------------------+
+|                            IDLI VISION — SYSTEM WORKFLOW                          |
++-----------------------------------------------------------------------------------+
+                                          │
+                               [1] Uploads Images
+                                          │
+                                          ▼
+                      +---------------------------------------+
+                      |               FRONTEND                |
+                      |          (HTML / CSS / JS)            |
+                      +---------------------------------------+
+                                          │
+                               [2] POST /api/analyze
+                                          │
+                                          ▼
+                      +---------------------------------------+
+                      |            BACKEND SERVER             |
+                      |          (Node.js / Express)          |
+                      +---------------------------------------+
+                                          │
+                               [3] Spawns Child Process
+                                          │
+                                          ▼
+                      +---------------------------------------+
+                      |        COMPUTER VISION (OpenCV)       |
+                      |   • Contour & Diameter Calibration    |
+                      |   • Roundness, Symmetry, Deformity    |
+                      |   • Surface Pores & NMS Filtering     |
+                      +---------------------------------------+
+                                          │
+                               [4] Raw Metrics JSON
+                                          │
+                                          ▼
+                      +---------------------------------------+
+                      |             SCORING ENGINE            |
+                      |          (scoringService.js)          |
+                      |   • Weighted Multi-Metric Formula     |
+                      |   • Overall Score & Quality Tier      |
+                      +---------------------------------------+
+                                          │
+                         [5] Scores & Annotated Overlays
+                                          │
+                                          ▼
+                      +---------------------------------------+
+                      |         QUALITY REPORT SCREEN         |
+                      |       (Overlays, Radar & Bars)        |
+                      +---------------------------------------+
+                             │                         │
+               [6] Consult Coach                 [7] Freeform Q&A
+                             │                         │
+                             ▼                         ▼
+             +-------------------------------+   +-----------------------------+
+             |       GEMINI COACH API        |   |       GROK CHATBOT API      |
+             |  • Roast, Science & Target    |   |  • Instant Comedic Advice   |
+             +-------------------------------+   +-----------------------------+
+```
 
 ### Project Demo
 # Video
